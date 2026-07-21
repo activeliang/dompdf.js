@@ -769,6 +769,7 @@ interface NodeRec {
   renderMode: number;
   divisionDisable: boolean;
   pageBreak: boolean;
+  href?: string;
   text?: string;
   lines?: LineBox[];
 }
@@ -785,6 +786,8 @@ const F_RENDER_MODE = 0x80;
 const F_DIVISION_DISABLE = 0x100;
 const F_PAGE_BREAK = 0x200;
 const F_SHADOW = 0x400;
+const F_LINK = 0x800;
+const F_AVOID_IMAGE_SPLIT = 0x1000;
 
 const FORM_FIELD_KIND_TEXT = 1;
 const FORM_FIELD_KIND_TEXTAREA = 2;
@@ -3636,6 +3639,9 @@ function buildInlineRunsWithLangFont(
     // re-measuring now — see the comment by imgRectAtConvert above.
     const rawRect = (isImg && imgRectAtConvert.get(el)) || el.getBoundingClientRect();
     const r = docRect(rawRect);
+    const hrefAttr = el.tagName === 'A' ? el.getAttribute('href')?.trim() : '';
+    const resolvedHref = hrefAttr ? (el as HTMLAnchorElement).href.trim() : '';
+    const href = resolvedHref && !/^javascript:/i.test(resolvedHref) ? resolvedHref : undefined;
 
     const kind = isImg ? 2 : 0;
     const strategy: RenderStrategy = isImg ? 'vector' : classifyRenderStrategy(el, cs);
@@ -3674,6 +3680,7 @@ function buildInlineRunsWithLangFont(
           renderMode: 0,
           divisionDisable: el.hasAttribute('divisionDisable'),
           pageBreak: el.hasAttribute('pageBreak'),
+          href,
           imageId,
           objectFit: 0,
         });
@@ -3813,9 +3820,11 @@ function buildInlineRunsWithLangFont(
     if (overflowHidden) flags |= F_OVERFLOW;
     if (hasOpacity) flags |= F_OPACITY;
     if (isImg) flags |= F_IMAGE;
+    if (isImg) flags |= F_AVOID_IMAGE_SPLIT;
     if (renderMode !== 0) flags |= F_RENDER_MODE;
     if (divisionDisable) flags |= F_DIVISION_DISABLE;
     if (pageBreak) flags |= F_PAGE_BREAK;
+    if (href) flags |= F_LINK;
 
     const node: NodeRec = {
       id,
@@ -3838,6 +3847,7 @@ function buildInlineRunsWithLangFont(
       renderMode,
       divisionDisable,
       pageBreak,
+      href,
       imageId: isImg ? imgToId.get(el) : undefined,
       objectFit: isImg ? objectFitNum(cs.objectFit) : undefined,
     };
@@ -4365,7 +4375,7 @@ function writeFormField(w: BinWriter, field: CollectedFormField): void {
 function encode(a: EncodeArgs): Uint8Array {
   const w = new BinWriter();
   w.bytes(new Uint8Array([0x44, 0x32, 0x50, 0x31])); // "D2P1"
-  w.u32(12); // version 12 (adds form field padding)
+  w.u32(12); // version 12 (adds hyperlink annotations and form field padding)
   w.f32(a.pageWidthPt);
   w.f32(a.pageHeightPt);
   w.f32(a.mTop);
@@ -4437,6 +4447,7 @@ function encode(a: EncodeArgs): Uint8Array {
     if (n.renderMode !== 0) flags |= F_RENDER_MODE;
     if (n.divisionDisable) flags |= F_DIVISION_DISABLE;
     if (n.pageBreak) flags |= F_PAGE_BREAK;
+    if (n.href) flags |= F_LINK;
     w.u16(flags);
     if (n.bg) {
       w.f32(n.bg[0]); w.f32(n.bg[1]); w.f32(n.bg[2]); w.f32(n.bg[3]);
@@ -4478,6 +4489,11 @@ function encode(a: EncodeArgs): Uint8Array {
       w.u8(n.objectFit ?? 0);
     }
     if (n.renderMode !== 0) w.u8(n.renderMode);
+    if (n.href) {
+      const hrefLen = BinWriter.utf8Len(n.href);
+      w.u32(hrefLen);
+      w.utf8(n.href);
+    }
     if (n.kind === 1) {
       const text = n.text ?? '';
       const tlen = BinWriter.utf8Len(text);
