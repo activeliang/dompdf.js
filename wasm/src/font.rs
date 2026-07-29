@@ -337,6 +337,12 @@ impl FontCtx {
             let mut used: Vec<u16> = cf.used_gids.borrow().iter().copied().collect();
             used.sort_unstable();
             used.dedup();
+            // Keep this list identical to the final subset font's glyph order.
+            // Composite outlines can pull in component glyphs that were not
+            // shaped directly; omitting them shifts every following Identity GID.
+            if let Ok(subset_glyphs) = cf.ttf.subset_glyphs(&used) {
+                used = subset_glyphs;
+            }
             if !used.contains(&0) {
                 used.insert(0, 0);
             }
@@ -345,6 +351,7 @@ impl FontCtx {
                 .enumerate()
                 .map(|(new_gid, &old_gid)| (old_gid, new_gid as u16))
                 .collect();
+            // Rebuild the set to mirror the subset font's exact glyph order.
             *cf.used_gids.borrow_mut() = used.iter().copied().collect();
             *cf.subset_old_to_new.borrow_mut() = Some(map);
         }
@@ -470,4 +477,54 @@ pub fn encode_cid(cf: &CidFont, text: &str) -> (Vec<u8>, u32) {
         }
     }
     (bytes, width)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::FontCtx;
+    use crate::snapshot::FontResource;
+    use crate::ttf::TtfFont;
+    use std::fs;
+    use std::path::PathBuf;
+
+    fn symbol_fallback_resource() -> FontResource {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("..")
+            .join("assets")
+            .join("symbol-fallback.ttf");
+        FontResource {
+            family: "SymbolFallback".into(),
+            style: 0,
+            weight: 400,
+            icon_font: false,
+            bytes: fs::read(path).expect("read symbol-fallback.ttf"),
+        }
+    }
+
+    #[test]
+    fn subset_map_includes_composite_glyph_dependencies() {
+        let resources = [symbol_fallback_resource()];
+        let fontctx = FontCtx::build(&resources).expect("build font context");
+        let codepoint = '\u{00E1}'; // aacute: a composite outline in the fixture font
+        let shaped = fontctx.shape(0, &codepoint.to_string(), true);
+        let old_gid = shaped[0].old_gid;
+        let directly_used = fontctx.cid[0].used_gids.borrow().clone();
+
+        fontctx.prepare_subset_maps();
+
+        let subset_glyphs = fontctx.cid[0].used_gids.borrow().clone();
+        assert!(
+            subset_glyphs.len() > directly_used.len() + 1,
+            "expected .notdef and composite component glyphs in the subset"
+        );
+        let expected_gid = subset_glyphs
+            .iter()
+            .position(|&gid| gid == old_gid)
+            .expect("composite glyph retained") as u16;
+        assert_eq!(fontctx.cid[0].subset_gid(old_gid), expected_gid);
+
+        let subset_bytes = fontctx.cid[0].ttf.embed_bytes(&subset_glyphs);
+        let subset = TtfFont::parse(&subset_bytes).expect("parse subset font");
+        assert_eq!(subset.gid_for(codepoint as u32), expected_gid);
+    }
 }
