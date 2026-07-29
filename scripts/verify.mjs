@@ -56,7 +56,7 @@ function writeOptHF(w, hf) {
 
 /**
  * Build a v10 snapshot.
- * opts: { pagination, header, footer, fontBytes?, fontFamily?, chinese? }
+ * opts: { pagination, header, footer, fontBytes?, fontFamily?, chinese?, text? }
  */
 function buildSnapshot(opts = {}) {
   const w = new Bin();
@@ -99,7 +99,7 @@ function buildSnapshot(opts = {}) {
   w.u32(0);
 
   // nodes
-  const text = opts.chinese ? '你好，PDF！中文测试。' : 'Hello, PDF!';
+  const text = opts.text ?? (opts.chinese ? '你好，PDF！中文测试。' : 'Hello, PDF!');
   const tlen = w.utf8Len(text);
   w.u32(3); // nodeCount
 
@@ -269,6 +269,30 @@ const latin4 = Buffer.from(pdf4).toString('latin1');
 check('has ExtGState resource dictionary', latin4.includes('/ExtGState <<'));
 check('has opacity object', latin4.includes('/Type /ExtGState /ca 0.5 /CA 0.5'));
 check('content stream applies gs operator', latin4.includes('/GS500 gs'));
+
+// ---- Test 5: composite glyph dependencies keep Identity CIDs aligned ----
+console.log('Test 5: composite glyph dependencies keep Identity CIDs aligned');
+const compositeFontPath = path.join(root, 'assets/symbol-fallback.ttf');
+if (existsSync(compositeFontPath)) {
+  const compositeFontBytes = readFileSync(compositeFontPath);
+  const snap5 = buildSnapshot({
+    pagination: true,
+    fontBytes: compositeFontBytes,
+    fontFamily: 'SymbolFallback',
+    text: '\u00E1', // aacute is a composite glyph in the fixture font
+  });
+  const pdf5 = render(snap5);
+  const latin5 = Buffer.from(pdf5).toString('latin1');
+  // .notdef, "a", and "acute" precede aacute in this subset, so the
+  // Identity-mapped content CID and ToUnicode source must both be GID 3.
+  check('content CID includes composite component slots', latin5.includes('<0003> Tj'));
+  check(
+    'ToUnicode uses the same composite CID',
+    latin5.includes('<0003> <00E1>'),
+  );
+} else {
+  console.log('  SKIP: symbol fallback font not found at', compositeFontPath);
+}
 
 console.log('');
 if (failures === 0) {

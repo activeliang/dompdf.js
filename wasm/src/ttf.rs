@@ -486,14 +486,25 @@ impl TtfFont {
         Ok(out)
     }
 
-    fn subset_bytes(&self, used_gids: &[u16]) -> Result<Vec<u8>, String> {
+    /// Return the exact glyph set and order that `subset_bytes` will emit.
+    ///
+    /// Composite glyphs may reference component glyphs that were not shaped
+    /// directly. Those components still occupy GIDs in the subset font. Since
+    /// the PDF uses `/CIDToGIDMap /Identity`, the content-stream map must use
+    /// this same transitive closure to keep CIDs aligned with subset GIDs.
+    pub(crate) fn subset_glyphs(&self, used_gids: &[u16]) -> Result<Vec<u16>, String> {
         let loca = self.loca_offsets()?;
         let mut keep = BTreeSet::new();
         keep.insert(0);
         for &gid in used_gids {
             self.collect_composite_glyphs(gid, &loca, &mut keep)?;
         }
-        let keep: Vec<u16> = keep.into_iter().collect();
+        Ok(keep.into_iter().collect())
+    }
+
+    fn subset_bytes(&self, used_gids: &[u16]) -> Result<Vec<u8>, String> {
+        let keep = self.subset_glyphs(used_gids)?;
+        let loca = self.loca_offsets()?;
         let old_to_new: HashMap<u16, u16> = keep
             .iter()
             .enumerate()
