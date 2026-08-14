@@ -601,7 +601,22 @@
     /* Markdown panel */
     { key: 'md-input-title', selector: '#panel-markdown .md-editor-panel .md-panel-title span', type: 'text', en: 'Markdown Input' },
     { key: 'md-preview-title', selector: '#panel-markdown .md-preview-panel .md-panel-title span', type: 'text', en: 'Typeset Preview (A4)' },
-    { key: 'md-empty-state', selector: '.md-empty-state p', type: 'text', en: 'Type Markdown on the left and it will automatically render into an A4 layout on the right' }
+    { key: 'md-empty-state', selector: '.md-empty-state p', type: 'text', en: 'Type Markdown on the left and it will automatically render into an A4 layout on the right' },
+
+    /* Section 10 - PR Verification (list-style / hyperlink / composite glyphs) */
+    { key: 'sec-10-bullet-1', selector: '#sec-10-bullet-1', type: 'text', en: 'Bullet list item 1' },
+    { key: 'sec-10-bullet-2', selector: '#sec-10-bullet-2', type: 'text', en: 'Bullet list item 2' },
+    { key: 'sec-10-num-1', selector: '#sec-10-num-1', type: 'text', en: 'Numbered list item 1' },
+    { key: 'sec-10-num-2', selector: '#sec-10-num-2', type: 'text', en: 'Numbered list item 2' },
+    { key: 'sec-10-square-1', selector: '#sec-10-square-1', type: 'text', en: 'Square marker item' },
+    { key: 'sec-10-checked', selector: '#sec-10-checked', type: 'html', en: '<input type="checkbox" checked /> Checked checkbox' },
+    { key: 'sec-10-unchecked', selector: '#sec-10-unchecked', type: 'html', en: '<input type="checkbox" /> Unchecked checkbox' },
+    { key: 'sec-10-radio', selector: '#sec-10-radio', type: 'html', en: '<input type="radio" name="g" checked /> Option one <input type="radio" name="g" /> Option two' },
+    { key: 'sec-10-hyperlink-title', selector: '#sec-10-hyperlink-title', type: 'text', en: 'Hyperlink Test' },
+    { key: 'sec-10-hyperlink-p1', selector: '#sec-10-hyperlink-p1', type: 'html', en: 'Regular text with an inline <a href="https://example.com">clickable link</a> in the middle.' },
+    { key: 'sec-10-hyperlink-p2', selector: '#sec-10-hyperlink-p2', type: 'html', en: '<a href="https://developer.mozilla.org">External documentation link</a> followed by more text.' },
+    { key: 'sec-10-compound-1', selector: '#sec-10-compound-1', type: 'text', en: 'Composite glyph test: \u00e1 \u00e9 \u00ef \u00f1 \u00fc \u00e4 \u00f6 mixed into a Chinese paragraph' },
+    { key: 'sec-10-compound-2', selector: '#sec-10-compound-2', type: 'text', en: 'Chinese text after leading composite glyphs: \u4e2d\u534e\u4eba\u6c11\u5171\u548c\u56fd\uff0cabcdefghijklmnopqrstuvwxyz' }
   ];
 
   function getSavedLocale() {
@@ -787,7 +802,7 @@
     document.getElementById('benchmark-mode-light').classList.toggle('active', benchmarkMode === 'light');
     document.getElementById('benchmark-mode-heavy').classList.toggle('active', benchmarkMode === 'heavy');
     document.getElementById('benchmark-mode-extreme').classList.toggle('active', benchmarkMode === 'extreme');
-    document.getElementById('benchmark-mode-light').textContent = currentLocale === 'zh' ? '9页' : '9 Pages';
+    document.getElementById('benchmark-mode-light').textContent = currentLocale === 'zh' ? '基准测试' : 'Benchmark';
     document.getElementById('benchmark-mode-heavy').textContent = currentLocale === 'zh' ? '500页' : '500 Pages';
     document.getElementById('benchmark-mode-extreme').textContent = currentLocale === 'zh' ? '10000页' : '10k Pages';
     document.querySelector('.benchmark-mode-switch').setAttribute('aria-label', currentLocale === 'zh' ? '生成页数' : 'Generated pages');

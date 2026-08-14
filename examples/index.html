@@ -1,257 +1,415 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      dompdf.js Studio - Pure JavaScript DOM-to-PDF Engine | Live Demo
+    </title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dompdf.js Studio - Pure JavaScript DOM-to-PDF Engine | Live Demo</title>
+    <meta
+      name="description"
+      content="dompdf.js is a pure JavaScript DOM-to-PDF renderer with no backend required. This live demo supports HTML and Markdown editing, real-time PDF preview, and high-fidelity multilingual export."
+    />
+    <meta
+      name="keywords"
+      content="dompdf.js, DOM to PDF, JavaScript PDF, frontend PDF generation, HTML to PDF, live PDF editor"
+    />
+    <link rel="canonical" href="https://dompdfjs.lisky.com.cn/" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="dompdf.js Studio - Pure JavaScript DOM-to-PDF Engine"
+    />
+    <meta
+      property="og:description"
+      content="A browser-side DOM-to-PDF rendering engine with HTML and Markdown editing plus real-time PDF preview."
+    />
+    <meta property="og:url" content="https://dompdfjs.lisky.com.cn/" />
+    <meta property="og:site_name" content="dompdf.js Studio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="dompdf.js Studio - Pure JavaScript DOM-to-PDF Engine"
+    />
+    <meta
+      name="twitter:description"
+      content="A browser-side DOM-to-PDF rendering engine with HTML and Markdown editing plus real-time PDF preview."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "dompdf.js",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "description": "Pure JavaScript DOM-to-PDF rendering engine",
+        "url": "https://dompdfjs.lisky.com.cn/"
+      }
+    </script>
 
-  <meta name="description"
-    content="dompdf.js is a pure JavaScript DOM-to-PDF renderer with no backend required. This live demo supports HTML and Markdown editing, real-time PDF preview, and high-fidelity multilingual export.">
-  <meta name="keywords"
-    content="dompdf.js, DOM to PDF, JavaScript PDF, frontend PDF generation, HTML to PDF, live PDF editor">
-  <link rel="canonical" href="https://dompdfjs.lisky.com.cn/">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="dompdf.js Studio - Pure JavaScript DOM-to-PDF Engine">
-  <meta property="og:description"
-    content="A browser-side DOM-to-PDF rendering engine with HTML and Markdown editing plus real-time PDF preview.">
-  <meta property="og:url" content="https://dompdfjs.lisky.com.cn/">
-  <meta property="og:site_name" content="dompdf.js Studio">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="dompdf.js Studio - Pure JavaScript DOM-to-PDF Engine">
-  <meta name="twitter:description"
-    content="A browser-side DOM-to-PDF rendering engine with HTML and Markdown editing plus real-time PDF preview.">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "dompdf.js",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Web",
-    "description": "Pure JavaScript DOM-to-PDF rendering engine",
-    "url": "https://dompdfjs.lisky.com.cn/"
-  }
-  </script>
+    <!-- 百度统计 -->
+    <script>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?a2c4d7af1047b494a380f17c3dbab82f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
 
-  <!-- 百度统计 -->
-  <script>
-    var _hmt = _hmt || [];
-    (function () {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?a2c4d7af1047b494a380f17c3dbab82f";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
+    <!-- Vditor styles (for Markdown tab) -->
+    <link rel="stylesheet" href="./vendor/vditor/dist/index.css" />
+    <link rel="stylesheet" href="./index.css" />
 
-  <!-- Vditor styles (for Markdown tab) -->
-  <link rel="stylesheet" href="./vendor/vditor/dist/index.css" />
-  <link rel="stylesheet" href="./index.css" />
+    <!-- Library Scripts -->
+    <script src="./vendor/dompurify.min.js"></script>
+    <script src="./vendor/marked.min.js"></script>
+    <script src="../dist/dompdf.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/dompdf.js@latest/dist/dompdf.min.js"></script> -->
+    <script src="./vendor/vditor/dist/index.min.js"></script>
+  </head>
 
-  <!-- Library Scripts -->
-  <script src="./vendor/dompurify.min.js"></script>
-  <script src="./vendor/marked.min.js"></script>
-  <script src="../dist/dompdf.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/dompdf.js@latest/dist/dompdf.min.js"></script> -->
-  <script src="./vendor/vditor/dist/index.min.js"></script>
-</head>
-
-<body>
-  <div class="app-shell">
-    <!-- ===== Sidebar ===== -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-brand">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-          </svg>
-          <span>dompdf.js <span class="brand-studio">Studio</span></span>
-        </div>
-
-        <div class="sidebar-status-wrap">
-          <div class="lang-switch" role="group" aria-label="Language switch">
-            <button class="lang-switch-btn active" id="lang-btn-en" type="button"
-              onclick="setLanguage('en')">EN</button>
-            <button class="lang-switch-btn" id="lang-btn-zh" type="button" onclick="setLanguage('zh')">中</button>
-          </div>
-          <div class="sidebar-status" style="display: none;">
-            <span id="status-dot" class="status-dot loading"></span>
-            <span id="status-text">引用中...</span>
-          </div>
-          <a class="sidebar-github-link" href="https://github.com/lmn1919/dompdf.js" target="_blank" rel="noreferrer"
-            aria-label="查看 dompdf.js GitHub 仓库" title="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <body>
+    <div class="app-shell">
+      <!-- ===== Sidebar ===== -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-brand">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path
-                d="M12 2C6.477 2 2 6.589 2 12.25c0 4.528 2.865 8.369 6.839 9.724.5.096.682-.222.682-.494 0-.244-.009-.89-.014-1.747-2.782.617-3.369-1.37-3.369-1.37-.454-1.18-1.108-1.494-1.108-1.494-.907-.634.069-.621.069-.621 1.003.072 1.531 1.054 1.531 1.054.891 1.564 2.338 1.112 2.907.85.091-.664.349-1.112.635-1.367-2.221-.259-4.555-1.14-4.555-5.073 0-1.121.39-2.038 1.029-2.757-.103-.26-.446-1.303.098-2.717 0 0 .84-.276 2.75 1.053A9.32 9.32 0 0 1 12 6.872c.85.004 1.706.118 2.505.347 1.909-1.329 2.748-1.053 2.748-1.053.546 1.414.203 2.457.1 2.717.64.719 1.028 1.636 1.028 2.757 0 3.943-2.338 4.811-4.566 5.065.359.318.678.944.678 1.903 0 1.374-.012 2.482-.012 2.82 0 .275.18.595.688.493C19.138 20.616 22 16.776 22 12.25 22 6.589 17.523 2 12 2Z" />
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
             </svg>
-          </a>
-        </div>
-      </div>
+            <span>dompdf.js <span class="brand-studio">Studio</span></span>
+          </div>
 
-      <div class="sidebar-scrollable">
-        <!-- Export Actions -->
-        <div class="sidebar-section">
-          <div class="action-btn-group">
-            <div class="action-btn-row">
-              <button class="action-btn action-btn-dompdf" id="btn-export-dompdf" onclick="exportDompdf()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span class="btn-label">导出 dompdf.js</span>
+          <div class="sidebar-status-wrap">
+            <div class="lang-switch" role="group" aria-label="Language switch">
+              <button
+                class="lang-switch-btn active"
+                id="lang-btn-en"
+                type="button"
+                onclick="setLanguage('en')"
+              >
+                EN
               </button>
-              <button class="action-btn action-btn-html2pdf" id="btn-export-html2pdf" onclick="exportHtml2pdf()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span class="btn-label">导出 html2pdf.js</span>
+              <button
+                class="lang-switch-btn"
+                id="lang-btn-zh"
+                type="button"
+                onclick="setLanguage('zh')"
+              >
+                中
               </button>
             </div>
-            <button class="action-btn action-btn-compare" id="btn-compare" onclick="runCompare()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            <div class="sidebar-status" style="display: none">
+              <span id="status-dot" class="status-dot loading"></span>
+              <span id="status-text">引用中...</span>
+            </div>
+            <a
+              class="sidebar-github-link"
+              href="https://github.com/lmn1919/dompdf.js"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="查看 dompdf.js GitHub 仓库"
+              title="GitHub"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2C6.477 2 2 6.589 2 12.25c0 4.528 2.865 8.369 6.839 9.724.5.096.682-.222.682-.494 0-.244-.009-.89-.014-1.747-2.782.617-3.369-1.37-3.369-1.37-.454-1.18-1.108-1.494-1.108-1.494-.907-.634.069-.621.069-.621 1.003.072 1.531 1.054 1.531 1.054.891 1.564 2.338 1.112 2.907.85.091-.664.349-1.112.635-1.367-2.221-.259-4.555-1.14-4.555-5.073 0-1.121.39-2.038 1.029-2.757-.103-.26-.446-1.303.098-2.717 0 0 .84-.276 2.75 1.053A9.32 9.32 0 0 1 12 6.872c.85.004 1.706.118 2.505.347 1.909-1.329 2.748-1.053 2.748-1.053.546 1.414.203 2.457.1 2.717.64.719 1.028 1.636 1.028 2.757 0 3.943-2.338 4.811-4.566 5.065.359.318.678.944.678 1.903 0 1.374-.012 2.482-.012 2.82 0 .275.18.595.688.493C19.138 20.616 22 16.776 22 12.25 22 6.589 17.523 2 12 2Z"
+                />
               </svg>
-              <span class="btn-label">一键性能对比</span>
-            </button>
+            </a>
           </div>
         </div>
 
-        <div class="sidebar-section" id="sidebar-benchmark-section">
-          <div class="sidebar-section-title">生成页数</div>
-          <div class="benchmark-control-group">
-            <div class="benchmark-mode-switch" role="tablist" aria-label="9页">
-              <button class="benchmark-mode-btn active" id="benchmark-mode-light"
-                onclick="setBenchmarkMode('light')">9页</button>
-              <button class="benchmark-mode-btn" id="benchmark-mode-heavy"
-                onclick="setBenchmarkMode('heavy')">500页</button>
-              <button class="benchmark-mode-btn" id="benchmark-mode-extreme"
-                onclick="setBenchmarkMode('extreme')">10000页</button>
+        <div class="sidebar-scrollable">
+          <!-- Export Actions -->
+          <div class="sidebar-section">
+            <div class="action-btn-group">
+              <div class="action-btn-row">
+                <button
+                  class="action-btn action-btn-dompdf"
+                  id="btn-export-dompdf"
+                  onclick="exportDompdf()"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span class="btn-label">导出 dompdf.js</span>
+                </button>
+                <button
+                  class="action-btn action-btn-html2pdf"
+                  id="btn-export-html2pdf"
+                  onclick="exportHtml2pdf()"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span class="btn-label">导出 html2pdf.js</span>
+                </button>
+              </div>
+              <button
+                class="action-btn action-btn-compare"
+                id="btn-compare"
+                onclick="runCompare()"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                <span class="btn-label">一键性能对比</span>
+              </button>
             </div>
-            <label class="benchmark-toggle-row" for="benchmark-compress-toggle">
-              <span class="benchmark-toggle-copy">
-                <strong>dompdf 压缩</strong>
-                <span id="benchmark-compress-label">开启</span>
-              </span>
-              <input type="checkbox" id="benchmark-compress-toggle" onchange="toggleBenchmarkCompress(this.checked)"
-                checked />
-            </label>
-            <div class="benchmark-meta" id="benchmark-meta">当前模式：12页 · 1 组短文本 · 压缩开启</div>
+          </div>
+
+          <div class="sidebar-section" id="sidebar-benchmark-section">
+            <div class="sidebar-section-title">生成页数</div>
+            <div class="benchmark-control-group">
+              <div
+                class="benchmark-mode-switch"
+                role="tablist"
+                aria-label="基准测试"
+              >
+                <button
+                  class="benchmark-mode-btn active"
+                  id="benchmark-mode-light"
+                  onclick="setBenchmarkMode('light')"
+                >
+                  基准测试
+                </button>
+                <button
+                  class="benchmark-mode-btn"
+                  id="benchmark-mode-heavy"
+                  onclick="setBenchmarkMode('heavy')"
+                >
+                  500页
+                </button>
+                <button
+                  class="benchmark-mode-btn"
+                  id="benchmark-mode-extreme"
+                  onclick="setBenchmarkMode('extreme')"
+                >
+                  10000页
+                </button>
+              </div>
+              <label
+                class="benchmark-toggle-row"
+                for="benchmark-compress-toggle"
+              >
+                <span class="benchmark-toggle-copy">
+                  <strong>dompdf 压缩</strong>
+                  <span id="benchmark-compress-label">开启</span>
+                </span>
+                <input
+                  type="checkbox"
+                  id="benchmark-compress-toggle"
+                  onchange="toggleBenchmarkCompress(this.checked)"
+                  checked
+                />
+              </label>
+              <div class="benchmark-meta" id="benchmark-meta">
+                当前模式：12页 · 1 组短文本 · 压缩开启
+              </div>
+            </div>
+          </div>
+
+          <!-- Benchmark Metrics -->
+          <div class="sidebar-section">
+            <div class="sidebar-section-title">对比结果</div>
+            <div class="metric-row-flat">
+              <span class="metric-row-label" id="label-speed-dompdf"
+                >dompdf.js 耗时</span
+              >
+              <span class="metric-row-value dompdf-color" id="speed-dompdf"
+                >--</span
+              >
+            </div>
+            <div class="metric-row-flat">
+              <span class="metric-row-label" id="label-speed-html2pdf"
+                >html2pdf.js 耗时</span
+              >
+              <span class="metric-row-value html2pdf-color" id="speed-html2pdf"
+                >--</span
+              >
+            </div>
+            <div class="metric-bar-wrapper" style="margin: 6px 0 2px">
+              <div
+                class="metric-bar dompdf-bar"
+                id="speed-bar-dompdf"
+                style="width: 0%"
+              ></div>
+              <div
+                class="metric-bar html2pdf-bar"
+                id="speed-bar-html2pdf"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="metric-delta" id="speed-delta"></div>
+
+            <div class="metric-row-flat" style="margin-top: 10px">
+              <span class="metric-row-label" id="label-size-dompdf"
+                >dompdf.js 体积</span
+              >
+              <span class="metric-row-value dompdf-color" id="size-dompdf"
+                >--</span
+              >
+            </div>
+            <div class="metric-row-flat">
+              <span class="metric-row-label" id="label-size-html2pdf"
+                >html2pdf.js 体积</span
+              >
+              <span class="metric-row-value html2pdf-color" id="size-html2pdf"
+                >--</span
+              >
+            </div>
+            <div class="metric-bar-wrapper" style="margin: 6px 0 2px">
+              <div
+                class="metric-bar dompdf-bar"
+                id="size-bar-dompdf"
+                style="width: 0%"
+              ></div>
+              <div
+                class="metric-bar html2pdf-bar"
+                id="size-bar-html2pdf"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="metric-delta" id="size-delta"></div>
           </div>
         </div>
 
-        <!-- Benchmark Metrics -->
-        <div class="sidebar-section">
-          <div class="sidebar-section-title">对比结果</div>
-          <div class="metric-row-flat">
-            <span class="metric-row-label" id="label-speed-dompdf">dompdf.js 耗时</span>
-            <span class="metric-row-value dompdf-color" id="speed-dompdf">--</span>
-          </div>
-          <div class="metric-row-flat">
-            <span class="metric-row-label" id="label-speed-html2pdf">html2pdf.js 耗时</span>
-            <span class="metric-row-value html2pdf-color" id="speed-html2pdf">--</span>
-          </div>
-          <div class="metric-bar-wrapper" style="margin: 6px 0 2px;">
-            <div class="metric-bar dompdf-bar" id="speed-bar-dompdf" style="width: 0%"></div>
-            <div class="metric-bar html2pdf-bar" id="speed-bar-html2pdf" style="width: 0%"></div>
-          </div>
-          <div class="metric-delta" id="speed-delta"></div>
-
-          <div class="metric-row-flat" style="margin-top: 10px;">
-            <span class="metric-row-label" id="label-size-dompdf">dompdf.js 体积</span>
-            <span class="metric-row-value dompdf-color" id="size-dompdf">--</span>
-          </div>
-          <div class="metric-row-flat">
-            <span class="metric-row-label" id="label-size-html2pdf">html2pdf.js 体积</span>
-            <span class="metric-row-value html2pdf-color" id="size-html2pdf">--</span>
-          </div>
-          <div class="metric-bar-wrapper" style="margin: 6px 0 2px;">
-            <div class="metric-bar dompdf-bar" id="size-bar-dompdf" style="width: 0%"></div>
-            <div class="metric-bar html2pdf-bar" id="size-bar-html2pdf" style="width: 0%"></div>
-          </div>
-          <div class="metric-delta" id="size-delta"></div>
+        <!-- Footer Tabs & Panels -->
+        <div class="sidebar-footer-tabs">
+          <button
+            class="sidebar-footer-tab active"
+            id="footer-tab-specs"
+            onclick="switchFooterTab('specs')"
+          >
+            引擎技术规格
+          </button>
+          <button
+            class="sidebar-footer-tab"
+            id="footer-tab-code"
+            onclick="switchFooterTab('code')"
+          >
+            快速接入代码
+          </button>
         </div>
-      </div>
-
-      <!-- Footer Tabs & Panels -->
-      <div class="sidebar-footer-tabs">
-        <button class="sidebar-footer-tab active" id="footer-tab-specs"
-          onclick="switchFooterTab('specs')">引擎技术规格</button>
-        <button class="sidebar-footer-tab" id="footer-tab-code" onclick="switchFooterTab('code')">快速接入代码</button>
-      </div>
-      <div class="sidebar-footer-panels">
-        <div class="footer-panel active" id="footer-panel-specs">
-          <table class="specs-mini-table">
-            <thead>
-              <tr>
-                <th>对比项</th>
-                <th>dompdf.js</th>
-                <th>html2pdf</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>技术机制</td>
-                <td>Rust + WASM</td>
-                <td>html2canvas</td>
-              </tr>
-              <tr>
-                <td>渲染输出</td>
-                <td style="color: var(--sidebar-accent);">原生 PDF 矢量指令</td>
-                <td>位图画板嵌入</td>
-              </tr>
-              <tr>
-                <td>文本可读</td>
-                <td style="color: var(--sidebar-success);">可选择、复制、检索</td>
-                <td style="color: var(--sidebar-text-muted);">完全不可选择</td>
-              </tr>
-              <tr>
-                <td>缩放质量</td>
-                <td style="color: var(--sidebar-success);">矢量无损缩放</td>
-                <td style="color: var(--sidebar-text-muted);">位图拉伸模糊</td>
-              </tr>
-              <tr>
-                <td>分页机制</td>
-                <td style="color: var(--sidebar-success);">原生分页 (基于行高)</td>
-                <td style="color: var(--sidebar-text-muted);">Canvas 裁切拼接</td>
-              </tr>
-              <tr>
-                <td>首屏耗时</td>
-                <td style="color: var(--sidebar-success);">依赖 WASM 载入耗时</td>
-                <td style="color: var(--sidebar-text-muted);">主线程直接运行</td>
-              </tr>
-              <tr>
-                <td>性能瓶颈</td>
-                <td style="color: var(--sidebar-success);">受 WASM 计算力影响</td>
-                <td style="color: var(--sidebar-error);">大图 DOM 极易崩溃</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="footer-panel" id="footer-panel-code">
-          <div class="code-label">dompdf.js</div>
-          <pre class="code-mini"><span class="kw">const</span> blob = <span class="kw">await</span> <span class="fn">dompdf</span>(element, {
+        <div class="sidebar-footer-panels">
+          <div class="footer-panel active" id="footer-panel-specs">
+            <table class="specs-mini-table">
+              <thead>
+                <tr>
+                  <th>对比项</th>
+                  <th>dompdf.js</th>
+                  <th>html2pdf</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>技术机制</td>
+                  <td>Rust + WASM</td>
+                  <td>html2canvas</td>
+                </tr>
+                <tr>
+                  <td>渲染输出</td>
+                  <td style="color: var(--sidebar-accent)">
+                    原生 PDF 矢量指令
+                  </td>
+                  <td>位图画板嵌入</td>
+                </tr>
+                <tr>
+                  <td>文本可读</td>
+                  <td style="color: var(--sidebar-success)">
+                    可选择、复制、检索
+                  </td>
+                  <td style="color: var(--sidebar-text-muted)">完全不可选择</td>
+                </tr>
+                <tr>
+                  <td>缩放质量</td>
+                  <td style="color: var(--sidebar-success)">矢量无损缩放</td>
+                  <td style="color: var(--sidebar-text-muted)">位图拉伸模糊</td>
+                </tr>
+                <tr>
+                  <td>分页机制</td>
+                  <td style="color: var(--sidebar-success)">
+                    原生分页 (基于行高)
+                  </td>
+                  <td style="color: var(--sidebar-text-muted)">
+                    Canvas 裁切拼接
+                  </td>
+                </tr>
+                <tr>
+                  <td>首屏耗时</td>
+                  <td style="color: var(--sidebar-success)">
+                    依赖 WASM 载入耗时
+                  </td>
+                  <td style="color: var(--sidebar-text-muted)">
+                    主线程直接运行
+                  </td>
+                </tr>
+                <tr>
+                  <td>性能瓶颈</td>
+                  <td style="color: var(--sidebar-success)">
+                    受 WASM 计算力影响
+                  </td>
+                  <td style="color: var(--sidebar-error)">大图 DOM 极易崩溃</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="footer-panel" id="footer-panel-code">
+            <div class="code-label">dompdf.js</div>
+            <pre
+              class="code-mini"
+            ><span class="kw">const</span> blob = <span class="kw">await</span> <span class="fn">dompdf</span>(element, {
   format: <span class="str">'a4'</span>,
   pagination: <span class="kw">true</span>,
   compress: <span class="kw">true</span>,
   useCORS: <span class="kw">true</span>,
   fontConfig: { <span class="cmt">/* ... */</span> }
 });</pre>
-          <div class="code-label">html2pdf.js</div>
-          <pre class="code-mini"><span class="fn">html2pdf</span>()
+            <div class="code-label">html2pdf.js</div>
+            <pre class="code-mini"><span class="fn">html2pdf</span>()
   .<span class="fn">from</span>(element)
   .<span class="fn">set</span>({
     margin: <span class="str">0</span>,
@@ -260,1058 +418,1638 @@
     pagebreak: { mode: [<span class="str">'css'</span>, <span class="str">'legacy'</span>], avoid: [<span class="str">'[divisionDisable]'</span>] }
   })
   .<span class="fn">output</span>(<span class="str">'blob'</span>);</pre>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
 
-    <!-- ===== Content Area ===== -->
-    <main class="content-area">
-      <!-- ===== Content Header ===== -->
-      <header class="content-header">
-        <div class="tab-switcher">
-          <button class="tab-btn active" id="tab-btn-basic" onclick="switchTab('basic')">综合测试页</button>
-          <button class="tab-btn" id="tab-btn-markdown" onclick="switchTab('markdown')">Markdown 编辑器</button>
+      <!-- ===== Content Area ===== -->
+      <main class="content-area">
+        <!-- ===== Content Header ===== -->
+        <header class="content-header">
+          <div class="tab-switcher">
+            <button
+              class="tab-btn active"
+              id="tab-btn-basic"
+              onclick="switchTab('basic')"
+            >
+              综合测试页
+            </button>
+            <button
+              class="tab-btn"
+              id="tab-btn-markdown"
+              onclick="switchTab('markdown')"
+            >
+              Markdown 编辑器
+            </button>
+          </div>
+
+          <div class="header-info">
+            <span>A4 页面模拟 (794px × 1123px)</span>
+            <span class="info-divider"></span>
+            <!-- <span id="topbar-page-info">总计约 1.0 页</span> -->
+            <span class="info-divider"></span>
+            <span>缩放比例 100%</span>
+          </div>
+        </header>
+
+        <div
+          class="top-loading-overlay"
+          id="top-loading-overlay"
+          hidden
+          aria-live="polite"
+        >
+          <div class="top-loading-card" role="status" aria-label="导出进度">
+            <span class="top-loading-spinner" aria-hidden="true"></span>
+            <span class="top-loading-text" id="top-loading-text"
+              >正在处理中...</span
+            >
+          </div>
         </div>
 
-        <div class="header-info">
-          <span>A4 页面模拟 (794px × 1123px)</span>
-          <span class="info-divider"></span>
-          <!-- <span id="topbar-page-info">总计约 1.0 页</span> -->
-          <span class="info-divider"></span>
-          <span>缩放比例 100%</span>
-        </div>
-      </header>
+        <!-- Tab 1: 综合测试页 -->
+        <div class="tab-panel active" id="panel-basic">
+          <div class="doc-viewport">
+            <article id="document" class="doc">
+              <style>
+                .ds-hero {
+                  display: grid;
+                  grid-template-columns: minmax(0, 1.65fr) minmax(220px, 1fr);
+                  gap: 32px;
+                  padding-bottom: 28px;
+                  border-bottom: 1px solid var(--border-color);
+                  margin-bottom: 32px;
+                }
 
-      <div class="top-loading-overlay" id="top-loading-overlay" hidden aria-live="polite">
-        <div class="top-loading-card" role="status" aria-label="导出进度">
-          <span class="top-loading-spinner" aria-hidden="true"></span>
-          <span class="top-loading-text" id="top-loading-text">正在处理中...</span>
-        </div>
-      </div>
+                .ds-hero h1 {
+                  font-size: 30px;
+                  line-height: 1.18;
+                  letter-spacing: -0.02em;
+                  margin: 0 0 14px;
+                  color: #0f172a;
+                }
 
-      <!-- Tab 1: 综合测试页 -->
-      <div class="tab-panel active" id="panel-basic">
-        <div class="doc-viewport">
-          <article id="document" class="doc">
-            <style>
-              .ds-hero {
-                display: grid;
-                grid-template-columns: minmax(0, 1.65fr) minmax(220px, 1fr);
-                gap: 32px;
-                padding-bottom: 28px;
-                border-bottom: 1px solid var(--border-color);
-                margin-bottom: 32px;
-              }
+                .ds-hero .lede {
+                  font-size: 14px;
+                  line-height: 1.7;
+                  color: var(--text-secondary);
+                  margin: 0 0 18px;
+                }
 
-              .ds-hero h1 {
-                font-size: 30px;
-                line-height: 1.18;
-                letter-spacing: -0.02em;
-                margin: 0 0 14px;
-                color: #0f172a;
-              }
+                .ds-meta {
+                  padding: 4px 0 4px 20px;
+                  border: none;
+                  border-left: 2px solid #0f172a;
+                  background: transparent;
+                }
 
-              .ds-hero .lede {
-                font-size: 14px;
-                line-height: 1.7;
-                color: var(--text-secondary);
-                margin: 0 0 18px;
-              }
+                .ds-meta dt {
+                  font-size: 10px;
+                  font-weight: 700;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  color: var(--text-muted);
+                  margin-bottom: 3px;
+                }
 
-              .ds-meta {
-                padding: 4px 0 4px 20px;
-                border: none;
-                border-left: 2px solid #0f172a;
-                background: transparent;
-              }
+                .ds-meta dd {
+                  margin: 0 0 12px;
+                  font-size: 13px;
+                  font-weight: 600;
+                  color: #0f172a;
+                }
 
-              .ds-meta dt {
-                font-size: 10px;
-                font-weight: 700;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-                color: var(--text-muted);
-                margin-bottom: 3px;
-              }
+                .ds-meta dd:last-child {
+                  margin-bottom: 0;
+                }
 
-              .ds-meta dd {
-                margin: 0 0 12px;
-                font-size: 13px;
-                font-weight: 600;
-                color: #0f172a;
-              }
+                .ds-pill {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  padding: 4px 10px;
+                  border-radius: 6px;
+                  border: 1px solid #cbd5e1;
+                  background: transparent;
+                  color: #334155;
+                  font-size: 11px;
+                  font-weight: 600;
+                }
 
-              .ds-meta dd:last-child {
-                margin-bottom: 0;
-              }
+                .ds-pill-row {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                }
 
-              .ds-pill {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                padding: 4px 10px;
-                border-radius: 6px;
-                border: 1px solid #cbd5e1;
-                background: transparent;
-                color: #334155;
-                font-size: 11px;
-                font-weight: 600;
-              }
+                .ds-kpi-grid {
+                  display: grid;
+                  grid-template-columns: repeat(4, minmax(0, 1fr));
+                  gap: 20px;
+                  margin-bottom: 36px;
+                  padding-bottom: 24px;
+                  border-bottom: 1px solid var(--border-color);
+                }
 
-              .ds-pill-row {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-              }
+                .ds-kpi {
+                  padding: 0 0 0 14px;
+                  border: none;
+                  border-left: 2px solid #2563eb;
+                  background: transparent;
+                }
 
-              .ds-kpi-grid {
-                display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 20px;
-                margin-bottom: 36px;
-                padding-bottom: 24px;
-                border-bottom: 1px solid var(--border-color);
-              }
+                .ds-kpi:nth-child(2) {
+                  border-left-color: #8b5cf6;
+                }
 
-              .ds-kpi {
-                padding: 0 0 0 14px;
-                border: none;
-                border-left: 2px solid #2563eb;
-                background: transparent;
-              }
+                .ds-kpi:nth-child(3) {
+                  border-left-color: #10b981;
+                }
 
-              .ds-kpi:nth-child(2) {
-                border-left-color: #8b5cf6;
-              }
+                .ds-kpi:nth-child(4) {
+                  border-left-color: #f59e0b;
+                }
 
-              .ds-kpi:nth-child(3) {
-                border-left-color: #10b981;
-              }
+                .ds-kpi-label {
+                  font-size: 10px;
+                  font-weight: 700;
+                  letter-spacing: 0.06em;
+                  text-transform: uppercase;
+                  color: var(--text-muted);
+                  margin-bottom: 4px;
+                }
 
-              .ds-kpi:nth-child(4) {
-                border-left-color: #f59e0b;
-              }
+                .ds-kpi strong {
+                  display: block;
+                  font-size: 22px;
+                  font-weight: 700;
+                  color: #0f172a;
+                  margin-bottom: 4px;
+                  line-height: 1.2;
+                }
 
-              .ds-kpi-label {
-                font-size: 10px;
-                font-weight: 700;
-                letter-spacing: 0.06em;
-                text-transform: uppercase;
-                color: var(--text-muted);
-                margin-bottom: 4px;
-              }
+                .ds-kpi span {
+                  font-size: 12px;
+                  color: var(--text-secondary);
+                  line-height: 1.5;
+                  display: block;
+                }
 
-              .ds-kpi strong {
-                display: block;
-                font-size: 22px;
-                font-weight: 700;
-                color: #0f172a;
-                margin-bottom: 4px;
-                line-height: 1.2;
-              }
+                .ds-swatch {
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 10px 0;
+                  border-bottom: 1px solid #f1f5f9;
+                  background: transparent;
+                }
 
-              .ds-kpi span {
-                font-size: 12px;
-                color: var(--text-secondary);
-                line-height: 1.5;
-                display: block;
-              }
+                .ds-swatch:last-child {
+                  border-bottom: 0;
+                }
 
-              .ds-swatch {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 10px 0;
-                border-bottom: 1px solid #f1f5f9;
-                background: transparent;
-              }
+                .ds-swatch-color {
+                  width: 36px;
+                  height: 36px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(0, 0, 0, 0.08);
+                  flex: none;
+                }
 
-              .ds-swatch:last-child {
-                border-bottom: 0;
-              }
+                .ds-gradient-bar {
+                  height: 52px;
+                  border-radius: 8px;
+                  border: 1px solid rgba(0, 0, 0, 0.08);
+                  margin-bottom: 12px;
+                }
 
-              .ds-swatch-color {
-                width: 36px;
-                height: 36px;
-                border-radius: 6px;
-                border: 1px solid rgba(0, 0, 0, 0.08);
-                flex: none;
-              }
+                .ds-icon-grid {
+                  display: grid;
+                  grid-template-columns: repeat(6, 1fr);
+                  gap: 10px;
+                }
 
-              .ds-gradient-bar {
-                height: 52px;
-                border-radius: 8px;
-                border: 1px solid rgba(0, 0, 0, 0.08);
-                margin-bottom: 12px;
-              }
+                .ds-icon-cell {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  gap: 6px;
+                  padding: 12px 6px;
+                  border: 1px solid #e2e8f0;
+                  border-radius: 6px;
+                  background: transparent;
+                  font-size: 10px;
+                  color: var(--text-secondary);
+                }
 
-              .ds-icon-grid {
-                display: grid;
-                grid-template-columns: repeat(6, 1fr);
-                gap: 10px;
-              }
+                .ds-icon-cell svg {
+                  width: 24px;
+                  height: 24px;
+                  color: #334155;
+                }
 
-              .ds-icon-cell {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 6px;
-                padding: 12px 6px;
-                border: 1px solid #e2e8f0;
-                border-radius: 6px;
-                background: transparent;
-                font-size: 10px;
-                color: var(--text-secondary);
-              }
+                .ds-badge {
+                  display: inline-flex;
+                  padding: 3px 8px;
+                  border-radius: 4px;
+                  font-size: 11px;
+                  font-weight: 600;
+                }
 
-              .ds-icon-cell svg {
-                width: 24px;
-                height: 24px;
-                color: #334155;
-              }
+                .ds-alert {
+                  padding: 10px 14px;
+                  border-radius: 6px;
+                  display: flex;
+                  gap: 10px;
+                  align-items: flex-start;
+                  font-size: 12px;
+                  line-height: 1.6;
+                  border-left: 3px solid currentColor;
+                }
 
-              .ds-badge {
-                display: inline-flex;
-                padding: 3px 8px;
-                border-radius: 4px;
-                font-size: 11px;
-                font-weight: 600;
-              }
+                .ds-alert-icon {
+                  flex: none;
+                  width: 18px;
+                  height: 18px;
+                }
 
-              .ds-alert {
-                padding: 10px 14px;
-                border-radius: 6px;
-                display: flex;
-                gap: 10px;
-                align-items: flex-start;
-                font-size: 12px;
-                line-height: 1.6;
-                border-left: 3px solid currentColor;
-              }
+                .ds-button-row {
+                  display: flex;
+                  gap: 8px;
+                  flex-wrap: wrap;
+                }
 
-              .ds-alert-icon {
-                flex: none;
-                width: 18px;
-                height: 18px;
-              }
+                .ds-button {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  padding: 7px 14px;
+                  border-radius: 6px;
+                  font-size: 12px;
+                  font-weight: 600;
+                  border: 1px solid transparent;
+                }
 
-              .ds-button-row {
-                display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-              }
+                .ds-quote {
+                  position: relative;
+                  padding: 12px 0 12px 24px;
+                  border-radius: 0;
+                  background: transparent;
+                  border-left: 3px solid #2563eb;
+                  font-style: italic;
+                  color: var(--text-secondary);
+                  margin-top: 16px;
+                }
 
-              .ds-button {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                padding: 7px 14px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 600;
-                border: 1px solid transparent;
-              }
+                .ds-quote::before {
+                  content: "“";
+                  position: absolute;
+                  left: 6px;
+                  top: 0px;
+                  font-size: 32px;
+                  color: #cbd5e1;
+                  font-family: Georgia, serif;
+                  line-height: 1;
+                }
 
-              .ds-quote {
-                position: relative;
-                padding: 12px 0 12px 24px;
-                border-radius: 0;
-                background: transparent;
-                border-left: 3px solid #2563eb;
-                font-style: italic;
-                color: var(--text-secondary);
-                margin-top: 16px;
-              }
+                .ds-lang-stack {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 14px;
+                }
 
-              .ds-quote::before {
-                content: "“";
-                position: absolute;
-                left: 6px;
-                top: 0px;
-                font-size: 32px;
-                color: #cbd5e1;
-                font-family: Georgia, serif;
-                line-height: 1;
-              }
+                .ds-lang-sample {
+                  padding: 2px 0 2px 14px;
+                  border-radius: 0;
+                  background: transparent;
+                  border: none;
+                  border-left: 2px solid #2563eb;
+                }
 
-              .ds-lang-stack {
-                display: flex;
-                flex-direction: column;
-                gap: 14px;
-              }
+                .ds-lang-sample .label {
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #2563eb;
+                  margin-bottom: 4px;
+                  text-transform: uppercase;
+                  letter-spacing: 0.05em;
+                }
 
-              .ds-lang-sample {
-                padding: 2px 0 2px 14px;
-                border-radius: 0;
-                background: transparent;
-                border: none;
-                border-left: 2px solid #2563eb;
-              }
+                .ds-lang-sample p {
+                  margin: 0;
+                  font-size: 13px;
+                  line-height: 1.7;
+                  color: #334155;
+                }
 
-              .ds-lang-sample .label {
-                font-size: 10px;
-                font-weight: 700;
-                color: #2563eb;
-                margin-bottom: 4px;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-              }
+                .ds-clip-demo {
+                  width: 100%;
+                  height: 86px;
+                  overflow: hidden;
+                  border-radius: 8px;
+                  border: 1px solid #e2e8f0;
+                  background: #f8fafc;
+                  padding: 12px;
+                  position: relative;
+                }
 
-              .ds-lang-sample p {
-                margin: 0;
-                font-size: 13px;
-                line-height: 1.7;
-                color: #334155;
-              }
+                .ds-clip-demo .spill {
+                  position: absolute;
+                  left: 50%;
+                  top: 50%;
+                  width: 160px;
+                  height: 160px;
+                  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                  border-radius: 50%;
+                  transform: translate(-50%, -30%);
+                  opacity: 0.7;
+                }
 
-              .ds-clip-demo {
-                width: 100%;
-                height: 86px;
-                overflow: hidden;
-                border-radius: 8px;
-                border: 1px solid #e2e8f0;
-                background: #f8fafc;
-                padding: 12px;
-                position: relative;
-              }
+                .ds-opacity-demo {
+                  position: relative;
+                  height: 86px;
+                  background: #f1f5f9;
+                  border-radius: 8px;
+                  overflow: hidden;
+                }
 
-              .ds-clip-demo .spill {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                width: 160px;
-                height: 160px;
-                background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-                border-radius: 50%;
-                transform: translate(-50%, -30%);
-                opacity: 0.7;
-              }
+                .ds-opacity-demo .layer {
+                  position: absolute;
+                  width: 80px;
+                  height: 80px;
+                  border-radius: 10px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #fff;
+                }
 
-              .ds-opacity-demo {
-                position: relative;
-                height: 86px;
-                background: #f1f5f9;
-                border-radius: 8px;
-                overflow: hidden;
-              }
+                .ds-timeline {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 16px;
+                  border-left: 2px solid #e2e8f0;
+                  padding-left: 16px;
+                  margin-left: 4px;
+                }
 
-              .ds-opacity-demo .layer {
-                position: absolute;
-                width: 80px;
-                height: 80px;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 10px;
-                font-weight: 700;
-                color: #fff;
-              }
+                .ds-timeline-item {
+                  display: flex;
+                  gap: 12px;
+                  position: relative;
+                }
 
-              .ds-timeline {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                border-left: 2px solid #e2e8f0;
-                padding-left: 16px;
-                margin-left: 4px;
-              }
+                .ds-timeline-dot {
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 50%;
+                  background: #2563eb;
+                  margin-top: 5px;
+                  flex: none;
+                  margin-left: -22px;
+                  outline: 3px solid #ffffff;
+                }
 
-              .ds-timeline-item {
-                display: flex;
-                gap: 12px;
-                position: relative;
-              }
+                .ds-timeline-item strong {
+                  font-size: 13px;
+                  color: #0f172a;
+                }
 
-              .ds-timeline-dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                background: #2563eb;
-                margin-top: 5px;
-                flex: none;
-                margin-left: -22px;
-                outline: 3px solid #ffffff;
-              }
+                .ds-timeline-item p {
+                  margin: 2px 0 0;
+                  font-size: 12px;
+                  color: var(--text-secondary);
+                  line-height: 1.6;
+                }
 
-              .ds-timeline-item strong {
-                font-size: 13px;
-                color: #0f172a;
-              }
+                .ds-divide-guard {
+                  margin-top: 24px;
+                  padding: 12px 0 12px 16px;
+                  border: none;
+                  border-left: 3px dashed #64748b;
+                  border-radius: 0;
+                  background: transparent;
+                }
+              </style>
 
-              .ds-timeline-item p {
-                margin: 2px 0 0;
-                font-size: 12px;
-                color: var(--text-secondary);
-                line-height: 1.6;
-              }
-
-              .ds-divide-guard {
-                margin-top: 24px;
-                padding: 12px 0 12px 16px;
-                border: none;
-                border-left: 3px dashed #64748b;
-                border-radius: 0;
-                background: transparent;
-              }
-            </style>
-
-            <header class="ds-hero">
-              <div>
-                <div class="eyebrow" id="hero-eyebrow">Global Product Design Spec</div>
-                <h1 id="hero-title">Orbit 设计系统国际化交付规范</h1>
-                <p class="lede" id="hero-lede">
-                  本示例以一份虚构的全球化产品设计规范为蓝本，覆盖中英混排、色彩体系、SVG 图标、组件状态、结构化表格、表单控件、代码公式与分页保护等真实文档场景，用来全面验证 dompdf.js 在前端 DOM 转
-                  PDF 时的矢量渲染、文本可复制性与多语言排版能力。
-                </p>
-                <div class="ds-pill-row" id="hero-pills">
-                  <span class="ds-pill">中英混排</span>
-                  <span class="ds-pill">矢量 SVG</span>
-                  <span class="ds-pill">结构化表格</span>
-                  <span class="ds-pill">表单控件</span>
-                  <span class="ds-pill">数学公式</span>
-                  <span class="ds-pill">分页保护</span>
-                </div>
-              </div>
-              <dl class="ds-meta">
-                <dt id="meta-doc-label">文档编号</dt>
-                <dd>DS-ORBIT-2026-Q3-001</dd>
-                <dt id="meta-version-label">版本</dt>
-                <dd>v2.4.0 Stable</dd>
-                <dt id="meta-owner-label">负责人</dt>
-                <dd>DesignOps / Shanghai</dd>
-                <dt id="meta-scope-label">适用范围</dt>
-                <dd>Web / Mobile / PDF Export</dd>
-              </dl>
-            </header>
-
-            <div class="ds-kpi-grid" aria-label="Top metrics">
-              <div class="ds-kpi">
-                <div class="ds-kpi-label" id="kpi-1-label">组件数量</div>
-                <strong>84</strong>
-                <span id="kpi-1-desc">覆盖按钮、输入、反馈、导航、数据展示五大类目</span>
-              </div>
-              <div class="ds-kpi">
-                <div class="ds-kpi-label" id="kpi-2-label">设计令牌</div>
-                <strong>216</strong>
-                <span id="kpi-2-desc">颜色、间距、字体、圆角、阴影全部参数化</span>
-              </div>
-              <div class="ds-kpi">
-                <div class="ds-kpi-label" id="kpi-3-label">支持语言</div>
-                <strong>12</strong>
-                <span id="kpi-3-desc">包含中文、英文及 RTL 排版实验</span>
-              </div>
-              <div class="ds-kpi">
-                <div class="ds-kpi-label" id="kpi-4-label">导出模式</div>
-                <strong>Vector</strong>
-                <span id="kpi-4-desc">文本与 SVG 以矢量形式输出，支持缩放与检索</span>
-              </div>
-            </div>
-
-            <section class="report-section">
-              <div class="report-section-head">
-                <div class="report-section-index">01</div>
+              <header class="ds-hero">
                 <div>
-                  <div class="report-section-kicker" id="sec-01-kicker">Typography &amp; i18n</div>
-                  <h2 id="sec-01-title">多语言排版与文本层</h2>
-                  <p class="report-section-summary cn-copy" id="sec-01-summary">
-                    全球化文档需要同时处理中文、英文与数字的混排。本节验证不同语系在分页、行高、字间距和复制顺序上的表现，确保最终 PDF 中的每个字符仍然是可选择的文本对象。
+                  <div class="eyebrow" id="hero-eyebrow">
+                    Global Product Design Spec
+                  </div>
+                  <h1 id="hero-title">Orbit 设计系统国际化交付规范</h1>
+                  <p class="lede" id="hero-lede">
+                    本示例以一份虚构的全球化产品设计规范为蓝本，覆盖中英混排、色彩体系、SVG
+                    图标、组件状态、结构化表格、表单控件、代码公式与分页保护等真实文档场景，用来全面验证
+                    dompdf.js 在前端 DOM 转 PDF
+                    时的矢量渲染、文本可复制性与多语言排版能力。
                   </p>
+                  <div class="ds-pill-row" id="hero-pills">
+                    <span class="ds-pill">中英混排</span>
+                    <span class="ds-pill">矢量 SVG</span>
+                    <span class="ds-pill">结构化表格</span>
+                    <span class="ds-pill">表单控件</span>
+                    <span class="ds-pill">数学公式</span>
+                    <span class="ds-pill">分页保护</span>
+                  </div>
+                </div>
+                <dl class="ds-meta">
+                  <dt id="meta-doc-label">文档编号</dt>
+                  <dd>DS-ORBIT-2026-Q3-001</dd>
+                  <dt id="meta-version-label">版本</dt>
+                  <dd>v2.4.0 Stable</dd>
+                  <dt id="meta-owner-label">负责人</dt>
+                  <dd>DesignOps / Shanghai</dd>
+                  <dt id="meta-scope-label">适用范围</dt>
+                  <dd>Web / Mobile / PDF Export</dd>
+                </dl>
+              </header>
+
+              <div class="ds-kpi-grid" aria-label="Top metrics">
+                <div class="ds-kpi">
+                  <div class="ds-kpi-label" id="kpi-1-label">组件数量</div>
+                  <strong>84</strong>
+                  <span id="kpi-1-desc"
+                    >覆盖按钮、输入、反馈、导航、数据展示五大类目</span
+                  >
+                </div>
+                <div class="ds-kpi">
+                  <div class="ds-kpi-label" id="kpi-2-label">设计令牌</div>
+                  <strong>216</strong>
+                  <span id="kpi-2-desc"
+                    >颜色、间距、字体、圆角、阴影全部参数化</span
+                  >
+                </div>
+                <div class="ds-kpi">
+                  <div class="ds-kpi-label" id="kpi-3-label">支持语言</div>
+                  <strong>12</strong>
+                  <span id="kpi-3-desc">包含中文、英文及 RTL 排版实验</span>
+                </div>
+                <div class="ds-kpi">
+                  <div class="ds-kpi-label" id="kpi-4-label">导出模式</div>
+                  <strong>Vector</strong>
+                  <span id="kpi-4-desc"
+                    >文本与 SVG 以矢量形式输出，支持缩放与检索</span
+                  >
                 </div>
               </div>
-              <div class="report-grid report-grid-2">
-                <section class="report-card">
-                  <h3 id="sec-01-card-1-title">多语言样本</h3>
-                  <div class="ds-lang-stack">
-                    <div class="ds-lang-sample">
-                      <div class="label">简体中文</div>
-                      <p class="cn-copy">设计系统不仅是组件库，更是一套连接产品、工程与品牌的共同语言。它通过统一的设计语言降低协作成本，并在多平台之间保持体验一致。</p>
-                    </div>
-                    <div class="ds-lang-sample">
-                      <div class="label">English</div>
-                      <p>A design system is not merely a component library; it is a shared language that connects
-                        product, engineering, and brand. It reduces collaboration cost and maintains consistent
-                        experiences across platforms.</p>
-                    </div>
 
-                  </div>
-                </section>
-                <section class="report-card">
-                  <h3 id="sec-01-card-2-title">排版验证清单</h3>
-                  <ul class="report-checklist">
-                    <li id="sec-01-check-1">中日韩字符与拉丁字母之间保持自然字距</li>
-                    <li id="sec-01-check-2">粗体、斜体与行内代码在换行处不丢失样式</li>
-                    <li id="sec-01-check-3">段落跨页时行高与首行缩进保持一致</li>
-                    <li id="sec-01-check-4">导出后的文本可直接搜索 “DesignOps” 或 “设计系统”</li>
-                    <li id="sec-01-check-5">引用块使用伪元素渲染装饰性引号</li>
-                  </ul>
-                  <div class="ds-quote" style="margin-top: 16px;">
-                    <p style="margin: 0; font-style: italic;" id="sec-01-quote">
-                      好的排版是隐形的：读者只注意到内容，而不会意识到字体、间距与分页背后的复杂计算。
+              <section class="report-section">
+                <div class="report-section-head">
+                  <div class="report-section-index">01</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-01-kicker">
+                      Typography &amp; i18n
+                    </div>
+                    <h2 id="sec-01-title">多语言排版与文本层</h2>
+                    <p
+                      class="report-section-summary cn-copy"
+                      id="sec-01-summary"
+                    >
+                      全球化文档需要同时处理中文、英文与数字的混排。本节验证不同语系在分页、行高、字间距和复制顺序上的表现，确保最终
+                      PDF 中的每个字符仍然是可选择的文本对象。
                     </p>
                   </div>
-                </section>
-              </div>
-            </section>
-
-            <section class="report-section">
-              <div class="report-section-head">
-                <div class="report-section-index">02</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-02-kicker">Color System</div>
-                  <h2 id="sec-02-title">色彩体系与渐变</h2>
-                  <p class="report-section-summary" id="sec-02-summary">
-                    现代界面依赖精确的色彩传递。本节展示主色、功能色、中性色的标准化定义，以及线性渐变在 PDF 矢量输出中的还原效果。
-                  </p>
                 </div>
-              </div>
-              <div class="report-grid report-grid-2">
-                <section class="report-card">
-                  <h3 id="sec-02-card-1-title">品牌与功能色板</h3>
-                  <div class="ds-swatch">
-                    <div class="ds-swatch-color" style="background: #2563eb;"></div>
-                    <div>
-                      <strong style="font-size: 13px; color: #0f172a;" id="sec-02-swatch-1-name">Primary Blue</strong>
-                      <div style="font-size: 11px; color: #64748b; margin-top: 2px;" id="sec-02-swatch-1-desc">#2563eb ·
-                        用于主按钮、链接、关键图标</div>
-                    </div>
-                  </div>
-                  <div class="ds-swatch">
-                    <div class="ds-swatch-color" style="background: #10b981;"></div>
-                    <div>
-                      <strong style="font-size: 13px; color: #0f172a;" id="sec-02-swatch-2-name">Success Green</strong>
-                      <div style="font-size: 11px; color: #64748b; margin-top: 2px;" id="sec-02-swatch-2-desc">#10b981 ·
-                        用于完成状态、正向反馈</div>
-                    </div>
-                  </div>
-                  <div class="ds-swatch">
-                    <div class="ds-swatch-color" style="background: #f59e0b;"></div>
-                    <div>
-                      <strong style="font-size: 13px; color: #0f172a;" id="sec-02-swatch-3-name">Warning Amber</strong>
-                      <div style="font-size: 11px; color: #64748b; margin-top: 2px;" id="sec-02-swatch-3-desc">#f59e0b ·
-                        用于警示、需关注状态</div>
-                    </div>
-                  </div>
-                  <div class="ds-swatch">
-                    <div class="ds-swatch-color" style="background: #ef4444;"></div>
-                    <div>
-                      <strong style="font-size: 13px; color: #0f172a;" id="sec-02-swatch-4-name">Error Red</strong>
-                      <div style="font-size: 11px; color: #64748b; margin-top: 2px;" id="sec-02-swatch-4-desc">#ef4444 ·
-                        用于错误提示、删除操作</div>
-                    </div>
-                  </div>
-                </section>
-                <section class="report-card">
-                  <h3 id="sec-02-card-2-title">渐变与中性阶</h3>
-                  <div class="ds-gradient-bar"
-                    style="background: linear-gradient(135deg, #2563eb, #8b5cf6); margin-bottom: 12px;"></div>
-                  <div class="ds-gradient-bar"
-                    style="background: linear-gradient(90deg, #f1f5f9, #94a3b8, #334155); margin-bottom: 12px;"></div>
-                  <div class="report-note" style="margin-top: 0;">
-                    <strong id="sec-02-note-strong">矢量渐变说明：</strong>
-                    <span id="sec-02-note-text">dompdf.js 将 CSS 渐变解析为 PDF 渐变着色器，放大后仍保持平滑过渡，而不会出现位图拉伸的锯齿或色带。</span>
-                  </div>
-                </section>
-              </div>
-            </section>
-
-            <section class="report-section">
-              <div class="report-section-head" divisionDisable>
-                <div class="report-section-index">03</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-03-kicker">Iconography &amp; SVG</div>
-                  <h2 id="sec-03-title">图标系统与矢量图形</h2>
-                  <p class="report-section-summary" id="sec-03-summary">
-                    图标是界面中使用最频繁的图形元素。本节通过内联 SVG 图标网格、趋势图表和位图样本，验证矢量图形在导出后的清晰度与可缩放性。
-                  </p>
-                </div>
-              </div>
-              <div class="report-grid report-grid-2">
-                <section class="report-card">
-                  <h3 id="sec-03-card-1-title">SVG 图标网格</h3>
-                  <div class="ds-icon-grid">
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                      </svg>
-                      <span>Home</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                      </svg>
-                      <span>Mail</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path
-                          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                        </path>
-                      </svg>
-                      <span>Settings</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                      </svg>
-                      <span>Shield</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                      </svg>
-                      <span>Download</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                      <span>Clock</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                      <span>Users</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="3" y1="9" x2="21" y2="9"></line>
-                        <line x1="9" y1="21" x2="9" y2="9"></line>
-                      </svg>
-                      <span>Layout</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                      </svg>
-                      <span>Chart</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                      </svg>
-                      <span>File</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                        <path d="M2 17l10 5 10-5"></path>
-                        <path d="M2 12l10 5 10-5"></path>
-                      </svg>
-                      <span>Layers</span>
-                    </div>
-                    <div class="ds-icon-cell">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                      </svg>
-                      <span>Info</span>
-                    </div>
-                  </div>
-                </section>
-                <section class="report-card">
-                  <h3 id="sec-03-card-2-title">矢量趋势图</h3>
-                  <svg class="report-svg-figure" viewBox="0 0 640 250" aria-label="Vector Multi-Metric Dashboard Chart">
-                    <defs>
-                      <linearGradient id="svgGradPrimary" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.38" />
-                        <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0" />
-                      </linearGradient>
-                      <linearGradient id="svgGradAccent" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.25" />
-                        <stop offset="100%" stop-color="#10b981" stop-opacity="0.0" />
-                      </linearGradient>
-                      <linearGradient id="svgBarGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.8" />
-                        <stop offset="100%" stop-color="#c084fc" stop-opacity="0.2" />
-                      </linearGradient>
-                    </defs>
-
-                    <!-- Background Card -->
-                    <rect x="0" y="0" width="640" height="250" rx="12" fill="#ffffff" stroke="#e2e8f0"
-                      stroke-width="1" />
-
-                    <!-- Header & Legend -->
-                    <text x="28" y="32" fill="#0f172a" font-size="14" font-weight="700"
-                      font-family="Inter, system-ui, sans-serif">Design System Adoption &amp; Performance Index</text>
-                    <g font-size="11" font-family="Inter, system-ui, sans-serif" font-weight="500">
-                      <circle cx="360" cy="27" r="4.5" fill="#6366f1" />
-                      <text x="370" y="31" fill="#475569">Adoption Rate</text>
-                      <circle cx="465" cy="27" r="4.5" fill="#10b981" />
-                      <text x="475" y="31" fill="#475569">Performance</text>
-                      <rect x="565" cy="23" width="9" height="9" rx="2" fill="#8b5cf6" opacity="0.8" />
-                      <text x="579" y="31" fill="#475569">Volume</text>
-                    </g>
-
-                    <!-- Grid Lines & Y Axis -->
-                    <g stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3 3">
-                      <line x1="50" y1="60" x2="610" y2="60" />
-                      <line x1="50" y1="100" x2="610" y2="100" />
-                      <line x1="50" y1="140" x2="610" y2="140" />
-                      <line x1="50" y1="180" x2="610" y2="180" />
-                    </g>
-                    <g fill="#94a3b8" font-size="10" font-family="Inter, system-ui, sans-serif" text-anchor="end">
-                      <text x="42" y="64">100%</text>
-                      <text x="42" y="104">75%</text>
-                      <text x="42" y="144">50%</text>
-                      <text x="42" y="184">25%</text>
-                    </g>
-
-                    <!-- Target SLA Threshold Line -->
-                    <line x1="50" y1="84" x2="610" y2="84" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="4 4"
-                      opacity="0.75" />
-                    <rect x="548" y="74" width="58" height="18" rx="4" fill="#fff1f2" stroke="#fecdd3"
-                      stroke-width="1" />
-                    <text x="577" y="87" fill="#e11d48" font-size="9" font-weight="700"
-                      font-family="Inter, system-ui, sans-serif" text-anchor="middle">SLA 85%</text>
-
-                    <!-- Bar Chart Series (Volume) -->
-                    <g fill="url(#svgBarGrad)">
-                      <rect x="76" y="145" width="28" height="65" rx="4" />
-                      <rect x="168" y="125" width="28" height="85" rx="4" />
-                      <rect x="260" y="110" width="28" height="100" rx="4" />
-                      <rect x="352" y="90" width="28" height="120" rx="4" />
-                      <rect x="444" y="75" width="28" height="135" rx="4" />
-                      <rect x="536" y="65" width="28" height="145" rx="4" />
-                    </g>
-
-                    <!-- Area Fill 1: Primary Adoption -->
-                    <polygon fill="url(#svgGradPrimary)"
-                      points="90,165 182,130 274,120 366,85 458,95 550,68 550,210 90,210" />
-                    <!-- Area Fill 2: Performance Index -->
-                    <polygon fill="url(#svgGradAccent)"
-                      points="90,178 182,150 274,135 366,110 458,90 550,78 550,210 90,210" />
-
-                    <!-- Line 2: Performance Index (Emerald) -->
-                    <polyline fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"
-                      stroke-linejoin="round" points="90,178 182,150 274,135 366,110 458,90 550,78" />
-                    <g fill="#ffffff" stroke="#10b981" stroke-width="2">
-                      <circle cx="90" cy="178" r="3.5" />
-                      <circle cx="182" cy="150" r="3.5" />
-                      <circle cx="274" cy="135" r="3.5" />
-                      <circle cx="366" cy="110" r="3.5" />
-                      <circle cx="458" cy="90" r="3.5" />
-                      <circle cx="550" cy="78" r="3.5" />
-                    </g>
-
-                    <!-- Line 1: Primary Adoption (Indigo) -->
-                    <polyline fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"
-                      stroke-linejoin="round" points="90,165 182,130 274,120 366,85 458,95 550,68" />
-                    <g fill="#6366f1">
-                      <circle cx="90" cy="165" r="5" stroke="#ffffff" stroke-width="2" />
-                      <circle cx="182" cy="130" r="5" stroke="#ffffff" stroke-width="2" />
-                      <circle cx="274" cy="120" r="5" stroke="#ffffff" stroke-width="2" />
-                      <circle cx="366" cy="85" r="5" stroke="#ffffff" stroke-width="2" />
-                      <circle cx="458" cy="95" r="5" stroke="#ffffff" stroke-width="2" />
-                      <circle cx="550" cy="68" r="5" stroke="#ffffff" stroke-width="2" />
-                    </g>
-
-                    <!-- Value Labels -->
-                    <g font-size="10" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="middle">
-                      <text x="366" y="74" fill="#4f46e5">88%</text>
-                      <text x="550" y="57" fill="#4f46e5">96%</text>
-                    </g>
-
-                    <!-- X Axis Labels -->
-                    <g fill="#64748b" font-size="11" font-weight="500" font-family="Inter, system-ui, sans-serif"
-                      text-anchor="middle">
-                      <text x="90" y="228">Q1 H1</text>
-                      <text x="182" y="228">Q2 H1</text>
-                      <text x="274" y="228">Q3 H2</text>
-                      <text x="366" y="228">Q4 H2</text>
-                      <text x="458" y="228">Q5 Target</text>
-                      <text x="550" y="228">Q6 Peak</text>
-                    </g>
-
-                    <!-- Baseline Axis -->
-                    <line x1="50" y1="210" x2="610" y2="210" stroke="#cbd5e1" stroke-width="1.5" />
-                  </svg>
-                  <p class="report-figure-caption" id="sec-03-caption">
-                    图表中的文字、折线与填充区域均为矢量对象，导出后可单独选择与搜索，不会出现截图引擎常见的像素化问题。
-                  </p>
-                </section>
-              </div>
-            </section>
-
-            <section class="report-section">
-              <div class="report-section-head">
-                <div class="report-section-index">04</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-04-kicker">Layout &amp; Components</div>
-                  <h2 id="sec-04-title">布局、组件与视觉状态</h2>
-                  <p class="report-section-summary" id="sec-04-summary">
-                    真实的界面文档包含徽章、警告、按钮、裁切容器与透明叠层。本节验证这些常见视觉模式在 PDF 分页与渲染中的稳定性。
-                  </p>
-                </div>
-              </div>
-              <div class="report-grid report-grid-2">
-                <section class="report-card" divisionDisable>
-                  <h3 id="sec-04-card-1-title">组件状态展示</h3>
-                  <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                      <span class="ds-badge" style="background: #dbeafe; color: #1e40af;">New</span>
-                      <span class="ds-badge" style="background: #d1fae5; color: #065f46;">Stable</span>
-                      <span class="ds-badge" style="background: #fef3c7; color: #92400e;">Beta</span>
-                      <span class="ds-badge" style="background: #fee2e2; color: #991b1b;">Deprecated</span>
-                    </div>
-                    <div class="ds-alert" style="background: #eff6ff; color: #1e40af;">
-                      <svg class="ds-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
-                      <span id="sec-04-alert-info">信息提示：本组件已通过可访问性评审，可直接用于生产环境。</span>
-                    </div>
-                    <div class="ds-alert" style="background: #fff7ed; color: #9a3412;">
-                      <svg class="ds-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                          d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
-                        </path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                      </svg>
-                      <span id="sec-04-alert-warn">注意：旧版 API 将在下个主版本移除，请尽快迁移。</span>
-                    </div>
-                    <div class="ds-button-row" style="margin-top: 4px;">
-                      <span class="ds-button" style="background: #2563eb; color: #fff;">Primary</span>
-                      <span class="ds-button"
-                        style="background: #fff; color: #334155; border-color: #cbd5e1;">Secondary</span>
-                      <span class="ds-button"
-                        style="background: transparent; color: #2563eb; border-color: #bfdbfe;">Ghost</span>
-                    </div>
-                  </div>
-                </section>
-                <section class="report-card">
-                  <h3 id="sec-04-card-2-title">布局特性验证</h3>
-                  <div class="report-mini-grid">
-                    <div class="report-mini-card">
-                      <h4>Overflow Clipping</h4>
-                      <div class="ds-clip-demo">
-                        <div class="spill"></div>
+                <div class="report-grid report-grid-2">
+                  <section class="report-card">
+                    <h3 id="sec-01-card-1-title">多语言样本</h3>
+                    <div class="ds-lang-stack">
+                      <div class="ds-lang-sample">
+                        <div class="label">简体中文</div>
+                        <p class="cn-copy">
+                          设计系统不仅是组件库，更是一套连接产品、工程与品牌的共同语言。它通过统一的设计语言降低协作成本，并在多平台之间保持体验一致。
+                        </p>
+                      </div>
+                      <div class="ds-lang-sample">
+                        <div class="label">English</div>
+                        <p>
+                          A design system is not merely a component library; it
+                          is a shared language that connects product,
+                          engineering, and brand. It reduces collaboration cost
+                          and maintains consistent experiences across platforms.
+                        </p>
                       </div>
                     </div>
-                    <div class="report-mini-card">
-                      <h4>Opacity Stacking</h4>
-                      <div class="ds-opacity-demo">
-                        <div class="layer" style="left: 20px; top: 10px; background: #3b82f6; opacity: 0.9;">90%</div>
-                        <div class="layer" style="left: 70px; top: 5px; background: #8b5cf6; opacity: 0.6;">60%</div>
-                        <div class="layer" style="left: 120px; top: 0; background: #ec4899; opacity: 0.3;">30%</div>
-                      </div>
+                  </section>
+                  <section class="report-card">
+                    <h3 id="sec-01-card-2-title">排版验证清单</h3>
+                    <ul class="report-checklist">
+                      <li id="sec-01-check-1">
+                        中日韩字符与拉丁字母之间保持自然字距
+                      </li>
+                      <li id="sec-01-check-2">
+                        粗体、斜体与行内代码在换行处不丢失样式
+                      </li>
+                      <li id="sec-01-check-3">
+                        段落跨页时行高与首行缩进保持一致
+                      </li>
+                      <li id="sec-01-check-4">
+                        导出后的文本可直接搜索 “DesignOps” 或 “设计系统”
+                      </li>
+                      <li id="sec-01-check-5">
+                        引用块使用伪元素渲染装饰性引号
+                      </li>
+                    </ul>
+                    <div class="ds-quote" style="margin-top: 16px">
+                      <p
+                        style="margin: 0; font-style: italic"
+                        id="sec-01-quote"
+                      >
+                        好的排版是隐形的：读者只注意到内容，而不会意识到字体、间距与分页背后的复杂计算。
+                      </p>
                     </div>
-                  </div>
-                  <div class="report-note" style="margin-top: 12px;" id="sec-04-note">
-                    左侧组件卡片带有 <code>divisionDisable</code> 属性，跨页时应整体迁移，避免按钮或徽章被拦腰截断。
-                  </div>
-                </section>
-              </div>
-            </section>
-
-            <section class="report-section">
-              <div class="report-section-head">
-                <div class="report-section-index">05</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-05-kicker">Structured Data</div>
-                  <h2 id="sec-05-title">结构化数据表格</h2>
-                  <p class="report-section-summary cn-copy" id="sec-05-summary">
-                    设计系统的落地情况需要通过数据衡量。下表动态生成多行记录，验证列宽分配、数字对齐、分组行、状态标签与中英混排字段在 PDF 中的稳定性。
-                  </p>
+                  </section>
                 </div>
-              </div>
-              <div class="report-card">
-                <div class="report-table-head">
+              </section>
+
+              <section class="report-section">
+                <div class="report-section-head">
+                  <div class="report-section-index">02</div>
                   <div>
-                    <h3 id="sec-05-table-title">组件落地矩阵</h3>
-                    <p class="report-table-subtle" id="sec-05-table-subtle">覆盖组件名称、负责团队、采用率、性能评分与 SLA 状态。</p>
-                  </div>
-                  <span class="report-status-chip" id="sec-05-chip">动态生成</span>
-                </div>
-                <div class="table-shell report-table-shell">
-                  <table class="report-table">
-                    <thead>
-                      <tr>
-                        <th rowspan="2">团队 / Team</th>
-                        <th colspan="2">上半年 H1</th>
-                        <th colspan="2">下半年 H2</th>
-                        <th rowspan="2">SLA</th>
-                      </tr>
-                      <tr>
-                        <th>采用率</th>
-                        <th>满意度</th>
-                        <th>采用率</th>
-                        <th>满意度</th>
-                      </tr>
-                    </thead>
-                    <tbody id="records-body"></tbody>
-                  </table>
-                </div>
-                <blockquote class="callout cn-copy" id="sec-05-callout">
-                  如果导出后仍能按列选中数字、搜索团队名称并完整复制状态标签，说明表格结构、字形映射与文本对象均保持正确。
-                </blockquote>
-              </div>
-            </section>
-
-            <section class="report-section">
-              <div class="report-section-head">
-                <div class="report-section-index">06</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-06-kicker">Forms</div>
-                  <h2 id="sec-06-title">表单控件与字段导出</h2>
-                  <p class="report-section-summary cn-copy" id="sec-06-summary">
-                    业务文档中常见的表单字段需要在 PDF 中保持当前值与视觉状态。本节覆盖文本、选择、日期、范围、颜色、进度等控件，验证静态与交互导出链路。
-                  </p>
-                </div>
-              </div>
-              <div class="report-grid report-grid-2">
-                <section class="form-demo-card">
-                  <h3 id="sec-06-card-1-title">文本与选择类</h3>
-                  <div class="form-demo-grid">
-                    <label class="form-demo-field" divisionDisable>
-                      <span id="form-label-project">组件名称</span>
-                      <input type="text" value="Button / 按钮" placeholder="输入组件名称">
-                    </label>
-                    <label class="form-demo-field" divisionDisable>
-                      <span id="form-label-owner">负责人</span>
-                      <input type="search" value="Alex Wang" placeholder="搜索负责人">
-                    </label>
-                    <label class="form-demo-field" divisionDisable>
-                      <span id="form-label-email">联系邮箱</span>
-                      <input type="email" value="designops@orbit.example" placeholder="name@example.com">
-                    </label>
-                    <label class="form-demo-field" divisionDisable>
-                      <span id="form-label-password">访问令牌</span>
-                      <input type="password" value="Orbit-2026-Spec" placeholder="请输入访问令牌">
-                    </label>
-                    <label class="form-demo-field" divisionDisable>
-                      <span id="form-label-stage">设计阶段</span>
-                      <select>
-                        <option id="form-stage-option-1">草案</option>
-                        <option id="form-stage-option-2" selected>评审中</option>
-                        <option id="form-stage-option-3">已发布</option>
-                      </select>
-                    </label>
-                    <label class="form-demo-field" divisionDisable>
-                      <span id="form-label-tags">适用平台</span>
-                      <select multiple size="4">
-                        <option id="form-tag-option-1" selected>Web</option>
-                        <option id="form-tag-option-2" selected>iOS</option>
-                        <option id="form-tag-option-3" selected>Android</option>
-                        <option id="form-tag-option-4">桌面端</option>
-                      </select>
-                    </label>
-                    <label class="form-demo-field form-demo-field-full" divisionDisable>
-                      <span id="form-label-notes">备注说明</span>
-                      <textarea rows="4" placeholder="在这里填写多行备注">请验证以下三项：
-1. placeholder 与 value 是否正确渲染
-2. checkbox / radio 是否保留当前状态
-3. 交互模式下字段是否可编辑</textarea>
-                    </label>
-                  </div>
-                </section>
-
-                <section class="report-card form-demo-card">
-                  <h3 id="sec-06-card-2-title">状态与静态控件</h3>
-                  <div class="form-demo-stack">
-                    <div class="form-demo-row" divisionDisable>
-                      <span class="form-demo-row-title" id="form-row-checks">验收项</span>
-                      <label class="form-check-chip"><input type="checkbox" checked><span
-                          id="form-checkbox-1">设计稿对齐</span></label>
-                      <label class="form-check-chip"><input type="checkbox"><span
-                          id="form-checkbox-2">需二次评审</span></label>
+                    <div class="report-section-kicker" id="sec-02-kicker">
+                      Color System
                     </div>
-                    <div class="form-demo-row" divisionDisable>
-                      <span class="form-demo-row-title" id="form-row-radio">发布通道</span>
-                      <label class="form-check-chip"><input type="radio" name="release-track"><span
-                          id="form-radio-1">Canary</span></label>
-                      <label class="form-check-chip"><input type="radio" name="release-track" checked><span
-                          id="form-radio-2">Stable</span></label>
+                    <h2 id="sec-02-title">色彩体系与渐变</h2>
+                    <p class="report-section-summary" id="sec-02-summary">
+                      现代界面依赖精确的色彩传递。本节展示主色、功能色、中性色的标准化定义，以及线性渐变在
+                      PDF 矢量输出中的还原效果。
+                    </p>
+                  </div>
+                </div>
+                <div class="report-grid report-grid-2">
+                  <section class="report-card">
+                    <h3 id="sec-02-card-1-title">品牌与功能色板</h3>
+                    <div class="ds-swatch">
+                      <div
+                        class="ds-swatch-color"
+                        style="background: #2563eb"
+                      ></div>
+                      <div>
+                        <strong
+                          style="font-size: 13px; color: #0f172a"
+                          id="sec-02-swatch-1-name"
+                          >Primary Blue</strong
+                        >
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: #64748b;
+                            margin-top: 2px;
+                          "
+                          id="sec-02-swatch-1-desc"
+                        >
+                          #2563eb · 用于主按钮、链接、关键图标
+                        </div>
+                      </div>
                     </div>
+                    <div class="ds-swatch">
+                      <div
+                        class="ds-swatch-color"
+                        style="background: #10b981"
+                      ></div>
+                      <div>
+                        <strong
+                          style="font-size: 13px; color: #0f172a"
+                          id="sec-02-swatch-2-name"
+                          >Success Green</strong
+                        >
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: #64748b;
+                            margin-top: 2px;
+                          "
+                          id="sec-02-swatch-2-desc"
+                        >
+                          #10b981 · 用于完成状态、正向反馈
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ds-swatch">
+                      <div
+                        class="ds-swatch-color"
+                        style="background: #f59e0b"
+                      ></div>
+                      <div>
+                        <strong
+                          style="font-size: 13px; color: #0f172a"
+                          id="sec-02-swatch-3-name"
+                          >Warning Amber</strong
+                        >
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: #64748b;
+                            margin-top: 2px;
+                          "
+                          id="sec-02-swatch-3-desc"
+                        >
+                          #f59e0b · 用于警示、需关注状态
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ds-swatch">
+                      <div
+                        class="ds-swatch-color"
+                        style="background: #ef4444"
+                      ></div>
+                      <div>
+                        <strong
+                          style="font-size: 13px; color: #0f172a"
+                          id="sec-02-swatch-4-name"
+                          >Error Red</strong
+                        >
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: #64748b;
+                            margin-top: 2px;
+                          "
+                          id="sec-02-swatch-4-desc"
+                        >
+                          #ef4444 · 用于错误提示、删除操作
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="report-card">
+                    <h3 id="sec-02-card-2-title">渐变与中性阶</h3>
+                    <div
+                      class="ds-gradient-bar"
+                      style="
+                        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+                        margin-bottom: 12px;
+                      "
+                    ></div>
+                    <div
+                      class="ds-gradient-bar"
+                      style="
+                        background: linear-gradient(
+                          90deg,
+                          #f1f5f9,
+                          #94a3b8,
+                          #334155
+                        );
+                        margin-bottom: 12px;
+                      "
+                    ></div>
+                    <div class="report-note" style="margin-top: 0">
+                      <strong id="sec-02-note-strong">矢量渐变说明：</strong>
+                      <span id="sec-02-note-text"
+                        >dompdf.js 将 CSS 渐变解析为 PDF
+                        渐变着色器，放大后仍保持平滑过渡，而不会出现位图拉伸的锯齿或色带。</span
+                      >
+                    </div>
+                  </section>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <div class="report-section-head" divisionDisable>
+                  <div class="report-section-index">03</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-03-kicker">
+                      Iconography &amp; SVG
+                    </div>
+                    <h2 id="sec-03-title">图标系统与矢量图形</h2>
+                    <p class="report-section-summary" id="sec-03-summary">
+                      图标是界面中使用最频繁的图形元素。本节通过内联 SVG
+                      图标网格、趋势图表和位图样本，验证矢量图形在导出后的清晰度与可缩放性。
+                    </p>
+                  </div>
+                </div>
+                <div class="report-grid report-grid-2">
+                  <section class="report-card">
+                    <h3 id="sec-03-card-1-title">SVG 图标网格</h3>
+                    <div class="ds-icon-grid">
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                          ></path>
+                          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Home</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                          ></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <span>Mail</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="3"></circle>
+                          <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                          ></path>
+                        </svg>
+                        <span>Settings</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                          ></path>
+                        </svg>
+                        <span>Shield</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                          ></path>
+                          <polyline points="7 10 12 15 17 10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Download</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>Clock</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                          ></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Users</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <rect
+                            x="3"
+                            y="3"
+                            width="18"
+                            height="18"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <line x1="3" y1="9" x2="21" y2="9"></line>
+                          <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                        <span>Layout</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="20" x2="18" y2="10"></line>
+                          <line x1="12" y1="20" x2="12" y2="4"></line>
+                          <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        <span>Chart</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                          ></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        <span>File</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                          <path d="M2 17l10 5 10-5"></path>
+                          <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <span>Layers</span>
+                      </div>
+                      <div class="ds-icon-cell">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="8" x2="12" y2="12"></line>
+                          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>Info</span>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="report-card">
+                    <h3 id="sec-03-card-2-title">矢量趋势图</h3>
+                    <svg
+                      class="report-svg-figure"
+                      viewBox="0 0 640 250"
+                      aria-label="Vector Multi-Metric Dashboard Chart"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="svgGradPrimary"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stop-color="#6366f1"
+                            stop-opacity="0.38"
+                          />
+                          <stop
+                            offset="100%"
+                            stop-color="#6366f1"
+                            stop-opacity="0.0"
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="svgGradAccent"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stop-color="#10b981"
+                            stop-opacity="0.25"
+                          />
+                          <stop
+                            offset="100%"
+                            stop-color="#10b981"
+                            stop-opacity="0.0"
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="svgBarGrad"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stop-color="#8b5cf6"
+                            stop-opacity="0.8"
+                          />
+                          <stop
+                            offset="100%"
+                            stop-color="#c084fc"
+                            stop-opacity="0.2"
+                          />
+                        </linearGradient>
+                      </defs>
+
+                      <!-- Background Card -->
+                      <rect
+                        x="0"
+                        y="0"
+                        width="640"
+                        height="250"
+                        rx="12"
+                        fill="#ffffff"
+                        stroke="#e2e8f0"
+                        stroke-width="1"
+                      />
+
+                      <!-- Header & Legend -->
+                      <text
+                        x="28"
+                        y="32"
+                        fill="#0f172a"
+                        font-size="14"
+                        font-weight="700"
+                        font-family="Inter, system-ui, sans-serif"
+                      >
+                        Design System Adoption &amp; Performance Index
+                      </text>
+                      <g
+                        font-size="11"
+                        font-family="Inter, system-ui, sans-serif"
+                        font-weight="500"
+                      >
+                        <circle cx="360" cy="27" r="4.5" fill="#6366f1" />
+                        <text x="370" y="31" fill="#475569">Adoption Rate</text>
+                        <circle cx="465" cy="27" r="4.5" fill="#10b981" />
+                        <text x="475" y="31" fill="#475569">Performance</text>
+                        <rect
+                          x="565"
+                          cy="23"
+                          width="9"
+                          height="9"
+                          rx="2"
+                          fill="#8b5cf6"
+                          opacity="0.8"
+                        />
+                        <text x="579" y="31" fill="#475569">Volume</text>
+                      </g>
+
+                      <!-- Grid Lines & Y Axis -->
+                      <g
+                        stroke="#f1f5f9"
+                        stroke-width="1"
+                        stroke-dasharray="3 3"
+                      >
+                        <line x1="50" y1="60" x2="610" y2="60" />
+                        <line x1="50" y1="100" x2="610" y2="100" />
+                        <line x1="50" y1="140" x2="610" y2="140" />
+                        <line x1="50" y1="180" x2="610" y2="180" />
+                      </g>
+                      <g
+                        fill="#94a3b8"
+                        font-size="10"
+                        font-family="Inter, system-ui, sans-serif"
+                        text-anchor="end"
+                      >
+                        <text x="42" y="64">100%</text>
+                        <text x="42" y="104">75%</text>
+                        <text x="42" y="144">50%</text>
+                        <text x="42" y="184">25%</text>
+                      </g>
+
+                      <!-- Target SLA Threshold Line -->
+                      <line
+                        x1="50"
+                        y1="84"
+                        x2="610"
+                        y2="84"
+                        stroke="#f43f5e"
+                        stroke-width="1.5"
+                        stroke-dasharray="4 4"
+                        opacity="0.75"
+                      />
+                      <rect
+                        x="548"
+                        y="74"
+                        width="58"
+                        height="18"
+                        rx="4"
+                        fill="#fff1f2"
+                        stroke="#fecdd3"
+                        stroke-width="1"
+                      />
+                      <text
+                        x="577"
+                        y="87"
+                        fill="#e11d48"
+                        font-size="9"
+                        font-weight="700"
+                        font-family="Inter, system-ui, sans-serif"
+                        text-anchor="middle"
+                      >
+                        SLA 85%
+                      </text>
+
+                      <!-- Bar Chart Series (Volume) -->
+                      <g fill="url(#svgBarGrad)">
+                        <rect x="76" y="145" width="28" height="65" rx="4" />
+                        <rect x="168" y="125" width="28" height="85" rx="4" />
+                        <rect x="260" y="110" width="28" height="100" rx="4" />
+                        <rect x="352" y="90" width="28" height="120" rx="4" />
+                        <rect x="444" y="75" width="28" height="135" rx="4" />
+                        <rect x="536" y="65" width="28" height="145" rx="4" />
+                      </g>
+
+                      <!-- Area Fill 1: Primary Adoption -->
+                      <polygon
+                        fill="url(#svgGradPrimary)"
+                        points="90,165 182,130 274,120 366,85 458,95 550,68 550,210 90,210"
+                      />
+                      <!-- Area Fill 2: Performance Index -->
+                      <polygon
+                        fill="url(#svgGradAccent)"
+                        points="90,178 182,150 274,135 366,110 458,90 550,78 550,210 90,210"
+                      />
+
+                      <!-- Line 2: Performance Index (Emerald) -->
+                      <polyline
+                        fill="none"
+                        stroke="#10b981"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        points="90,178 182,150 274,135 366,110 458,90 550,78"
+                      />
+                      <g fill="#ffffff" stroke="#10b981" stroke-width="2">
+                        <circle cx="90" cy="178" r="3.5" />
+                        <circle cx="182" cy="150" r="3.5" />
+                        <circle cx="274" cy="135" r="3.5" />
+                        <circle cx="366" cy="110" r="3.5" />
+                        <circle cx="458" cy="90" r="3.5" />
+                        <circle cx="550" cy="78" r="3.5" />
+                      </g>
+
+                      <!-- Line 1: Primary Adoption (Indigo) -->
+                      <polyline
+                        fill="none"
+                        stroke="#6366f1"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        points="90,165 182,130 274,120 366,85 458,95 550,68"
+                      />
+                      <g fill="#6366f1">
+                        <circle
+                          cx="90"
+                          cy="165"
+                          r="5"
+                          stroke="#ffffff"
+                          stroke-width="2"
+                        />
+                        <circle
+                          cx="182"
+                          cy="130"
+                          r="5"
+                          stroke="#ffffff"
+                          stroke-width="2"
+                        />
+                        <circle
+                          cx="274"
+                          cy="120"
+                          r="5"
+                          stroke="#ffffff"
+                          stroke-width="2"
+                        />
+                        <circle
+                          cx="366"
+                          cy="85"
+                          r="5"
+                          stroke="#ffffff"
+                          stroke-width="2"
+                        />
+                        <circle
+                          cx="458"
+                          cy="95"
+                          r="5"
+                          stroke="#ffffff"
+                          stroke-width="2"
+                        />
+                        <circle
+                          cx="550"
+                          cy="68"
+                          r="5"
+                          stroke="#ffffff"
+                          stroke-width="2"
+                        />
+                      </g>
+
+                      <!-- Value Labels -->
+                      <g
+                        font-size="10"
+                        font-weight="700"
+                        font-family="Inter, system-ui, sans-serif"
+                        text-anchor="middle"
+                      >
+                        <text x="366" y="74" fill="#4f46e5">88%</text>
+                        <text x="550" y="57" fill="#4f46e5">96%</text>
+                      </g>
+
+                      <!-- X Axis Labels -->
+                      <g
+                        fill="#64748b"
+                        font-size="11"
+                        font-weight="500"
+                        font-family="Inter, system-ui, sans-serif"
+                        text-anchor="middle"
+                      >
+                        <text x="90" y="228">Q1 H1</text>
+                        <text x="182" y="228">Q2 H1</text>
+                        <text x="274" y="228">Q3 H2</text>
+                        <text x="366" y="228">Q4 H2</text>
+                        <text x="458" y="228">Q5 Target</text>
+                        <text x="550" y="228">Q6 Peak</text>
+                      </g>
+
+                      <!-- Baseline Axis -->
+                      <line
+                        x1="50"
+                        y1="210"
+                        x2="610"
+                        y2="210"
+                        stroke="#cbd5e1"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+                    <p class="report-figure-caption" id="sec-03-caption">
+                      图表中的文字、折线与填充区域均为矢量对象，导出后可单独选择与搜索，不会出现截图引擎常见的像素化问题。
+                    </p>
+                  </section>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <div class="report-section-head">
+                  <div class="report-section-index">04</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-04-kicker">
+                      Layout &amp; Components
+                    </div>
+                    <h2 id="sec-04-title">布局、组件与视觉状态</h2>
+                    <p class="report-section-summary" id="sec-04-summary">
+                      真实的界面文档包含徽章、警告、按钮、裁切容器与透明叠层。本节验证这些常见视觉模式在
+                      PDF 分页与渲染中的稳定性。
+                    </p>
+                  </div>
+                </div>
+                <div class="report-grid report-grid-2">
+                  <section class="report-card" divisionDisable>
+                    <h3 id="sec-04-card-1-title">组件状态展示</h3>
+                    <div
+                      style="display: flex; flex-direction: column; gap: 12px"
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          gap: 8px;
+                          align-items: center;
+                          flex-wrap: wrap;
+                        "
+                      >
+                        <span
+                          class="ds-badge"
+                          style="background: #dbeafe; color: #1e40af"
+                          >New</span
+                        >
+                        <span
+                          class="ds-badge"
+                          style="background: #d1fae5; color: #065f46"
+                          >Stable</span
+                        >
+                        <span
+                          class="ds-badge"
+                          style="background: #fef3c7; color: #92400e"
+                          >Beta</span
+                        >
+                        <span
+                          class="ds-badge"
+                          style="background: #fee2e2; color: #991b1b"
+                          >Deprecated</span
+                        >
+                      </div>
+                      <div
+                        class="ds-alert"
+                        style="background: #eff6ff; color: #1e40af"
+                      >
+                        <svg
+                          class="ds-alert-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="16" x2="12" y2="12"></line>
+                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span id="sec-04-alert-info"
+                          >信息提示：本组件已通过可访问性评审，可直接用于生产环境。</span
+                        >
+                      </div>
+                      <div
+                        class="ds-alert"
+                        style="background: #fff7ed; color: #9a3412"
+                      >
+                        <svg
+                          class="ds-alert-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                          ></path>
+                          <line x1="12" y1="9" x2="12" y2="13"></line>
+                          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span id="sec-04-alert-warn"
+                          >注意：旧版 API 将在下个主版本移除，请尽快迁移。</span
+                        >
+                      </div>
+                      <div class="ds-button-row" style="margin-top: 4px">
+                        <span
+                          class="ds-button"
+                          style="background: #2563eb; color: #fff"
+                          >Primary</span
+                        >
+                        <span
+                          class="ds-button"
+                          style="
+                            background: #fff;
+                            color: #334155;
+                            border-color: #cbd5e1;
+                          "
+                          >Secondary</span
+                        >
+                        <span
+                          class="ds-button"
+                          style="
+                            background: transparent;
+                            color: #2563eb;
+                            border-color: #bfdbfe;
+                          "
+                          >Ghost</span
+                        >
+                      </div>
+                    </div>
+                  </section>
+                  <section class="report-card">
+                    <h3 id="sec-04-card-2-title">布局特性验证</h3>
+                    <div class="report-mini-grid">
+                      <div class="report-mini-card">
+                        <h4>Overflow Clipping</h4>
+                        <div class="ds-clip-demo">
+                          <div class="spill"></div>
+                        </div>
+                      </div>
+                      <div class="report-mini-card">
+                        <h4>Opacity Stacking</h4>
+                        <div class="ds-opacity-demo">
+                          <div
+                            class="layer"
+                            style="
+                              left: 20px;
+                              top: 10px;
+                              background: #3b82f6;
+                              opacity: 0.9;
+                            "
+                          >
+                            90%
+                          </div>
+                          <div
+                            class="layer"
+                            style="
+                              left: 70px;
+                              top: 5px;
+                              background: #8b5cf6;
+                              opacity: 0.6;
+                            "
+                          >
+                            60%
+                          </div>
+                          <div
+                            class="layer"
+                            style="
+                              left: 120px;
+                              top: 0;
+                              background: #ec4899;
+                              opacity: 0.3;
+                            "
+                          >
+                            30%
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="report-note"
+                      style="margin-top: 12px"
+                      id="sec-04-note"
+                    >
+                      左侧组件卡片带有
+                      <code>divisionDisable</code>
+                      属性，跨页时应整体迁移，避免按钮或徽章被拦腰截断。
+                    </div>
+                  </section>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <div class="report-section-head">
+                  <div class="report-section-index">05</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-05-kicker">
+                      Structured Data
+                    </div>
+                    <h2 id="sec-05-title">结构化数据表格</h2>
+                    <p
+                      class="report-section-summary cn-copy"
+                      id="sec-05-summary"
+                    >
+                      设计系统的落地情况需要通过数据衡量。下表动态生成多行记录，验证列宽分配、数字对齐、分组行、状态标签与中英混排字段在
+                      PDF 中的稳定性。
+                    </p>
+                  </div>
+                </div>
+                <div class="report-card">
+                  <div class="report-table-head">
+                    <div>
+                      <h3 id="sec-05-table-title">组件落地矩阵</h3>
+                      <p class="report-table-subtle" id="sec-05-table-subtle">
+                        覆盖组件名称、负责团队、采用率、性能评分与 SLA 状态。
+                      </p>
+                    </div>
+                    <span class="report-status-chip" id="sec-05-chip"
+                      >动态生成</span
+                    >
+                  </div>
+                  <div class="table-shell report-table-shell">
+                    <table class="report-table">
+                      <thead>
+                        <tr>
+                          <th rowspan="2">团队 / Team</th>
+                          <th colspan="2">上半年 H1</th>
+                          <th colspan="2">下半年 H2</th>
+                          <th rowspan="2">SLA</th>
+                        </tr>
+                        <tr>
+                          <th>采用率</th>
+                          <th>满意度</th>
+                          <th>采用率</th>
+                          <th>满意度</th>
+                        </tr>
+                      </thead>
+                      <tbody id="records-body"></tbody>
+                    </table>
+                  </div>
+                  <blockquote class="callout cn-copy" id="sec-05-callout">
+                    如果导出后仍能按列选中数字、搜索团队名称并完整复制状态标签，说明表格结构、字形映射与文本对象均保持正确。
+                  </blockquote>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <div class="report-section-head">
+                  <div class="report-section-index">06</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-06-kicker">
+                      Forms
+                    </div>
+                    <h2 id="sec-06-title">表单控件与字段导出</h2>
+                    <p
+                      class="report-section-summary cn-copy"
+                      id="sec-06-summary"
+                    >
+                      业务文档中常见的表单字段需要在 PDF
+                      中保持当前值与视觉状态。本节覆盖文本、选择、日期、范围、颜色、进度等控件，验证静态与交互导出链路。
+                    </p>
+                  </div>
+                </div>
+                <div class="report-grid report-grid-2">
+                  <section class="form-demo-card">
+                    <h3 id="sec-06-card-1-title">文本与选择类</h3>
                     <div class="form-demo-grid">
                       <label class="form-demo-field" divisionDisable>
-                        <span id="form-label-date">评审日期</span>
-                        <input type="date" value="2026-08-06">
+                        <span id="form-label-project">组件名称</span>
+                        <input
+                          type="text"
+                          value="Button / 按钮"
+                          placeholder="输入组件名称"
+                        />
                       </label>
                       <label class="form-demo-field" divisionDisable>
-                        <span id="form-label-time">评审时间</span>
-                        <input type="time" value="10:00">
+                        <span id="form-label-owner">负责人</span>
+                        <input
+                          type="search"
+                          value="Alex Wang"
+                          placeholder="搜索负责人"
+                        />
                       </label>
                       <label class="form-demo-field" divisionDisable>
-                        <span id="form-label-month">归档月份</span>
-                        <input type="month" value="2026-08">
+                        <span id="form-label-email">联系邮箱</span>
+                        <input
+                          type="email"
+                          value="designops@orbit.example"
+                          placeholder="name@example.com"
+                        />
                       </label>
                       <label class="form-demo-field" divisionDisable>
-                        <span id="form-label-week">排期周</span>
-                        <input type="week" value="2026-W32">
+                        <span id="form-label-password">访问令牌</span>
+                        <input
+                          type="password"
+                          value="Orbit-2026-Spec"
+                          placeholder="请输入访问令牌"
+                        />
                       </label>
                       <label class="form-demo-field" divisionDisable>
-                        <span id="form-label-range">完成度</span>
-                        <input type="range" min="0" max="100" value="78">
+                        <span id="form-label-stage">设计阶段</span>
+                        <select>
+                          <option id="form-stage-option-1">草案</option>
+                          <option id="form-stage-option-2" selected>
+                            评审中
+                          </option>
+                          <option id="form-stage-option-3">已发布</option>
+                        </select>
                       </label>
                       <label class="form-demo-field" divisionDisable>
-                        <span id="form-label-color">主题色</span>
-                        <input type="color" value="#2563eb">
+                        <span id="form-label-tags">适用平台</span>
+                        <select multiple size="4">
+                          <option id="form-tag-option-1" selected>Web</option>
+                          <option id="form-tag-option-2" selected>iOS</option>
+                          <option id="form-tag-option-3" selected>
+                            Android
+                          </option>
+                          <option id="form-tag-option-4">桌面端</option>
+                        </select>
+                      </label>
+                      <label
+                        class="form-demo-field form-demo-field-full"
+                        divisionDisable
+                      >
+                        <span id="form-label-notes">备注说明</span>
+                        <textarea rows="4" placeholder="在这里填写多行备注">
+请验证以下三项：
+1. placeholder 与 value 是否正确渲染
+2. checkbox / radio 是否保留当前状态
+3. 交互模式下字段是否可编辑</textarea
+                        >
                       </label>
                     </div>
-                    <div class="form-meter-grid" divisionDisable>
-                      <label class="form-demo-field">
-                        <span id="form-label-progress">文档进度</span>
-                        <progress value="78" max="100"></progress>
-                      </label>
-                      <label class="form-demo-field">
-                        <span id="form-label-meter">质量评分</span>
-                        <meter min="0" max="100" low="60" high="85" optimum="92" value="91"></meter>
-                      </label>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </section>
+                  </section>
 
-            <section class="report-section">
-              <div class="report-section-head">
-                <div class="report-section-index">07</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-07-kicker">Code &amp; Math</div>
-                  <h2 id="sec-07-title">代码块与数学公式</h2>
-                  <p class="report-section-summary" id="sec-07-summary">
-                    技术文档中常见的预格式化文本与公式需要保持等宽字体、上下标和分段结构。本节验证这些富文本元素在分页后的可读性。
-                  </p>
+                  <section class="report-card form-demo-card">
+                    <h3 id="sec-06-card-2-title">状态与静态控件</h3>
+                    <div class="form-demo-stack">
+                      <div class="form-demo-row" divisionDisable>
+                        <span class="form-demo-row-title" id="form-row-checks"
+                          >验收项</span
+                        >
+                        <label class="form-check-chip"
+                          ><input type="checkbox" checked /><span
+                            id="form-checkbox-1"
+                            >设计稿对齐</span
+                          ></label
+                        >
+                        <label class="form-check-chip"
+                          ><input type="checkbox" /><span id="form-checkbox-2"
+                            >需二次评审</span
+                          ></label
+                        >
+                      </div>
+                      <div class="form-demo-row" divisionDisable>
+                        <span class="form-demo-row-title" id="form-row-radio"
+                          >发布通道</span
+                        >
+                        <label class="form-check-chip"
+                          ><input type="radio" name="release-track" /><span
+                            id="form-radio-1"
+                            >Canary</span
+                          ></label
+                        >
+                        <label class="form-check-chip"
+                          ><input
+                            type="radio"
+                            name="release-track"
+                            checked
+                          /><span id="form-radio-2">Stable</span></label
+                        >
+                      </div>
+                      <div class="form-demo-grid">
+                        <label class="form-demo-field" divisionDisable>
+                          <span id="form-label-date">评审日期</span>
+                          <input type="date" value="2026-08-06" />
+                        </label>
+                        <label class="form-demo-field" divisionDisable>
+                          <span id="form-label-time">评审时间</span>
+                          <input type="time" value="10:00" />
+                        </label>
+                        <label class="form-demo-field" divisionDisable>
+                          <span id="form-label-month">归档月份</span>
+                          <input type="month" value="2026-08" />
+                        </label>
+                        <label class="form-demo-field" divisionDisable>
+                          <span id="form-label-week">排期周</span>
+                          <input type="week" value="2026-W32" />
+                        </label>
+                        <label class="form-demo-field" divisionDisable>
+                          <span id="form-label-range">完成度</span>
+                          <input type="range" min="0" max="100" value="78" />
+                        </label>
+                        <label class="form-demo-field" divisionDisable>
+                          <span id="form-label-color">主题色</span>
+                          <input type="color" value="#2563eb" />
+                        </label>
+                      </div>
+                      <div class="form-meter-grid" divisionDisable>
+                        <label class="form-demo-field">
+                          <span id="form-label-progress">文档进度</span>
+                          <progress value="78" max="100"></progress>
+                        </label>
+                        <label class="form-demo-field">
+                          <span id="form-label-meter">质量评分</span>
+                          <meter
+                            min="0"
+                            max="100"
+                            low="60"
+                            high="85"
+                            optimum="92"
+                            value="91"
+                          ></meter>
+                        </label>
+                      </div>
+                    </div>
+                  </section>
                 </div>
-              </div>
-              <div class="rich-grid">
-                <section class="rich-card" divisionDisable>
-                  <h3 id="sec-07-code-title-1">Design Token JSON</h3>
-                  <pre class="report-code"><code>{
+              </section>
+
+              <section class="report-section">
+                <div class="report-section-head">
+                  <div class="report-section-index">07</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-07-kicker">
+                      Code &amp; Math
+                    </div>
+                    <h2 id="sec-07-title">代码块与数学公式</h2>
+                    <p class="report-section-summary" id="sec-07-summary">
+                      技术文档中常见的预格式化文本与公式需要保持等宽字体、上下标和分段结构。本节验证这些富文本元素在分页后的可读性。
+                    </p>
+                  </div>
+                </div>
+                <div class="rich-grid">
+                  <section class="rich-card" divisionDisable>
+                    <h3 id="sec-07-code-title-1">Design Token JSON</h3>
+                    <pre class="report-code"><code>{
   <span class="tok-key">"color"</span>: {
     <span class="tok-key">"primary"</span>: { <span class="tok-key">"base"</span>: <span class="tok-val">"#2563eb"</span>, <span class="tok-key">"hover"</span>: <span class="tok-val">"#1d4ed8"</span> },
     <span class="tok-key">"success"</span>: { <span class="tok-key">"base"</span>: <span class="tok-val">"#10b981"</span>, <span class="tok-key">"hover"</span>: <span class="tok-val">"#059669"</span> },
@@ -1320,186 +2058,333 @@
   <span class="tok-key">"spacing"</span>: { <span class="tok-key">"xs"</span>: <span class="tok-val">"4px"</span>, <span class="tok-key">"sm"</span>: <span class="tok-val">"8px"</span>, <span class="tok-key">"md"</span>: <span class="tok-val">"16px"</span> },
   <span class="tok-key">"font"</span>: { <span class="tok-key">"sans"</span>: <span class="tok-val">"Inter, sans-serif"</span>, <span class="tok-key">"mono"</span>: <span class="tok-val">"JetBrains Mono"</span> }
 }</code></pre>
-                </section>
-                <section class="rich-card" divisionDisable>
-                  <h3 id="sec-07-code-title-2">Render Pipeline</h3>
-                  <pre
-                    class="report-code"><code><span class="tok-fn">snapshot</span><span class="tok-punct">(</span><span class="tok-param">element</span><span class="tok-punct">)</span>
+                  </section>
+                  <section class="rich-card" divisionDisable>
+                    <h3 id="sec-07-code-title-2">Render Pipeline</h3>
+                    <pre
+                      class="report-code"
+                    ><code><span class="tok-fn">snapshot</span><span class="tok-punct">(</span><span class="tok-param">element</span><span class="tok-punct">)</span>
   <span class="tok-arrow">-&gt;</span> <span class="tok-fn">normalizeStyles</span><span class="tok-punct">(</span><span class="tok-param">nodeTree</span><span class="tok-punct">)</span>
   <span class="tok-arrow">-&gt;</span> <span class="tok-fn">serializeSvgAndImages</span><span class="tok-punct">(</span><span class="tok-param">nodeTree</span><span class="tok-punct">)</span>
   <span class="tok-arrow">-&gt;</span> <span class="tok-fn">paginate</span><span class="tok-punct">(</span><span class="tok-param">lines, blocks</span><span class="tok-punct">)</span>
   <span class="tok-arrow">-&gt;</span> <span class="tok-fn">emitPdfObjects</span><span class="tok-punct">()</span>
   <span class="tok-arrow">-&gt;</span> <span class="tok-type">Blob</span><span class="tok-punct">(</span><span class="tok-val">application/pdf</span><span class="tok-punct">)</span></code></pre>
+                  </section>
+                </div>
+
+                <section class="math-block">
+                  <h3 id="sec-07-math-title">数学与符号样本</h3>
+                  <p id="sec-07-math-1">欧拉恒等式：</p>
+                  <p class="equation">e<sup>iπ</sup> + 1 = 0</p>
+                  <p id="sec-07-math-2">高斯积分：</p>
+                  <p class="equation">
+                    ∫<sub>-∞</sub><sup>+∞</sup> e<sup>-x²</sup> dx = √π
+                  </p>
+                  <p id="sec-07-math-3">贝叶斯定理：</p>
+                  <p class="equation">P(A | B) = P(B | A) · P(A) / P(B)</p>
+                  <p id="sec-07-math-4">分段函数：</p>
+                  <p class="equation">
+                    f(x) =
+                    <span class="cases"
+                      ><span>x²</span><span>2x + 1</span
+                      ><span>ln(x + 1)</span></span
+                    >
+                    &nbsp;&nbsp;if&nbsp;
+                    <span class="cases"
+                      ><span>x &lt; 0</span><span>0 ≤ x &lt; 1</span
+                      ><span>x ≥ 1</span></span
+                    >
+                  </p>
                 </section>
-              </div>
-
-              <section class="math-block">
-                <h3 id="sec-07-math-title">数学与符号样本</h3>
-                <p id="sec-07-math-1">欧拉恒等式：</p>
-                <p class="equation">e<sup>iπ</sup> + 1 = 0</p>
-                <p id="sec-07-math-2">高斯积分：</p>
-                <p class="equation">∫<sub>-∞</sub><sup>+∞</sup> e<sup>-x²</sup> dx = √π</p>
-                <p id="sec-07-math-3">贝叶斯定理：</p>
-                <p class="equation">P(A | B) = P(B | A) · P(A) / P(B)</p>
-                <p id="sec-07-math-4">分段函数：</p>
-                <p class="equation">
-                  f(x) =
-                  <span class="cases"><span>x²</span><span>2x + 1</span><span>ln(x + 1)</span></span>
-                  &nbsp;&nbsp;if&nbsp;
-                  <span class="cases"><span>x &lt; 0</span><span>0 ≤ x &lt; 1</span><span>x ≥ 1</span></span>
-                </p>
+                <div class="ds-divide-guard cn-copy" divisionDisable>
+                  <h3 id="sec-08-guard-title">跨页保护样本</h3>
+                  <p id="sec-08-guard-text">
+                    此模块带有
+                    <code>divisionDisable</code>
+                    属性。当内容接近页尾时，它应整体迁移到下一页，而不是被从中间截断。真实业务中的签字区、审批意见、票据封面等场景都需要类似的保护机制。
+                  </p>
+                </div>
               </section>
-              <div class="ds-divide-guard cn-copy" divisionDisable>
-                <h3 id="sec-08-guard-title">跨页保护样本</h3>
-                <p id="sec-08-guard-text">
-                  此模块带有 <code>divisionDisable</code> 属性。当内容接近页尾时，它应整体迁移到下一页，而不是被从中间截断。真实业务中的签字区、审批意见、票据封面等场景都需要类似的保护机制。
-                </p>
-              </div>
-            </section>
 
-            <section class="report-section">
-              <div class="report-section-head" divisionDisable>
-                <div class="report-section-index">08</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-08-kicker">Pagination</div>
-                  <h2 id="sec-08-title">分页压力与文档完整性</h2>
-                  <p class="report-section-summary cn-copy" id="sec-08-summary">
-                    真实文档通常跨越多页。本节通过重复条目、强制分页与跨页保护容器，验证 dompdf.js 在分页切点、连续复制与复杂块迁移上的表现。
+              <section class="report-section">
+                <div class="report-section-head" divisionDisable>
+                  <div class="report-section-index">08</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-08-kicker">
+                      Pagination
+                    </div>
+                    <h2 id="sec-08-title">分页压力与文档完整性</h2>
+                    <p
+                      class="report-section-summary cn-copy"
+                      id="sec-08-summary"
+                    >
+                      真实文档通常跨越多页。本节通过重复条目、强制分页与跨页保护容器，验证
+                      dompdf.js 在分页切点、连续复制与复杂块迁移上的表现。
+                    </p>
+                  </div>
+                </div>
+
+                <div class="report-appendix">
+                  <div class="report-appendix-note" id="sec-08-appendix-note">
+                    下列条目由脚本动态生成，用于验证长列表的分页行为与文本连续性。
+                  </div>
+                  <ol id="long-list" class="report-long-list"></ol>
+                </div>
+
+                <div class="timeline-card-doc">
+                  <h3 id="sec-08-timeline-title">发布里程碑</h3>
+                  <div class="ds-timeline">
+                    <div class="ds-timeline-item">
+                      <div class="ds-timeline-dot"></div>
+                      <div>
+                        <strong id="sec-08-timeline-phase-1-title"
+                          >Phase 1 · 设计规范冻结</strong
+                        >
+                        <p id="sec-08-timeline-phase-1-text">
+                          完成颜色、字体、间距、圆角等设计令牌的最终评审并锁定版本号。
+                        </p>
+                      </div>
+                    </div>
+                    <div class="ds-timeline-item">
+                      <div class="ds-timeline-dot"></div>
+                      <div>
+                        <strong id="sec-08-timeline-phase-2-title"
+                          >Phase 2 · 组件实现与测试</strong
+                        >
+                        <p id="sec-08-timeline-phase-2-text">
+                          在 Web、iOS、Android
+                          三端完成核心组件开发，并通过视觉回归测试。
+                        </p>
+                      </div>
+                    </div>
+                    <div class="ds-timeline-item">
+                      <div class="ds-timeline-dot"></div>
+                      <div>
+                        <strong id="sec-08-timeline-phase-3-title"
+                          >Phase 3 · 文档与交付</strong
+                        >
+                        <p id="sec-08-timeline-phase-3-text">
+                          生成面向设计与研发的 PDF
+                          规范文档，确认分页、目录、书签与搜索可用。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="report-section" style="margin-top: 42px">
+                <div class="report-section-head">
+                  <div class="report-section-index">09</div>
+                  <div>
+                    <div class="report-section-kicker" id="sec-09-kicker">
+                      Raster Sample
+                    </div>
+                    <h2 id="sec-09-title">位图嵌入样本</h2>
+                    <p class="report-section-summary" id="sec-09-summary">
+                      虽然 dompdf.js
+                      的优势在于矢量文本，但实际业务中仍需要嵌入位图。本节保留一张由
+                      Canvas
+                      生成的样本图，验证压缩、尺寸保持与嵌入链路的稳定性。
+                    </p>
+                  </div>
+                </div>
+                <div class="report-card">
+                  <img
+                    id="sample-img"
+                    class="report-raster-image"
+                    alt="raster sample for export validation"
+                  />
+                  <p class="report-figure-caption" id="sec-09-caption">
+                    该图为 JPEG
+                    位图样本，用来确认非矢量资源在导出后的颜色、尺寸与压缩表现。
                   </p>
                 </div>
-              </div>
-
-              <div class="report-appendix">
-                <div class="report-appendix-note" id="sec-08-appendix-note">
-                  下列条目由脚本动态生成，用于验证长列表的分页行为与文本连续性。
-                </div>
-                <ol id="long-list" class="report-long-list"></ol>
-              </div>
-
-              <div class="timeline-card-doc">
-                <h3 id="sec-08-timeline-title">发布里程碑</h3>
-                <div class="ds-timeline">
-                  <div class="ds-timeline-item">
-                    <div class="ds-timeline-dot"></div>
-                    <div>
-                      <strong id="sec-08-timeline-phase-1-title">Phase 1 · 设计规范冻结</strong>
-                      <p id="sec-08-timeline-phase-1-text">完成颜色、字体、间距、圆角等设计令牌的最终评审并锁定版本号。</p>
-                    </div>
-                  </div>
-                  <div class="ds-timeline-item">
-                    <div class="ds-timeline-dot"></div>
-                    <div>
-                      <strong id="sec-08-timeline-phase-2-title">Phase 2 · 组件实现与测试</strong>
-                      <p id="sec-08-timeline-phase-2-text">在 Web、iOS、Android 三端完成核心组件开发，并通过视觉回归测试。</p>
-                    </div>
-                  </div>
-                  <div class="ds-timeline-item">
-                    <div class="ds-timeline-dot"></div>
-                    <div>
-                      <strong id="sec-08-timeline-phase-3-title">Phase 3 · 文档与交付</strong>
-                      <p id="sec-08-timeline-phase-3-text">生成面向设计与研发的 PDF 规范文档，确认分页、目录、书签与搜索可用。</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-            </section>
-
-            <section class="report-section" style="margin-top: 42px;">
-              <div class="report-section-head">
-                <div class="report-section-index">09</div>
-                <div>
-                  <div class="report-section-kicker" id="sec-09-kicker">Raster Sample</div>
-                  <h2 id="sec-09-title">位图嵌入样本</h2>
-                  <p class="report-section-summary" id="sec-09-summary">
-                    虽然 dompdf.js 的优势在于矢量文本，但实际业务中仍需要嵌入位图。本节保留一张由 Canvas 生成的样本图，验证压缩、尺寸保持与嵌入链路的稳定性。
-                  </p>
-                </div>
-              </div>
-              <div class="report-card">
-                <img id="sample-img" class="report-raster-image" alt="raster sample for export validation" />
-                <p class="report-figure-caption" id="sec-09-caption">
-                  该图为 JPEG 位图样本，用来确认非矢量资源在导出后的颜色、尺寸与压缩表现。
+              </section>
+              <section class="report-section" style="margin-top: 42px">
+              <div style="width: 760px">
+                <h3>list-style-type</h3>
+                <ul style="list-style-type: disc">
+                  <li id="sec-10-bullet-1">圆点列表项一</li>
+                  <li id="sec-10-bullet-2">圆点列表项二</li>
+                </ul>
+                <ol style="list-style-type: decimal">
+                  <li id="sec-10-num-1">数字列表第一项</li>
+                  <li id="sec-10-num-2">第二项</li>
+                </ol>
+                <ul style="list-style-type: square">
+                  <li id="sec-10-square-1">方形标记项</li>
+                </ul>
+                <h3>checkbox / radio</h3>
+                <p id="sec-10-checked"><input type="checkbox" checked /> 已勾选复选框</p>
+                <p id="sec-10-unchecked"><input type="checkbox" /> 未勾选复选框</p>
+                <p id="sec-10-radio">
+                  <input type="radio" name="g" checked /> 单选一
+                  <input type="radio" name="g" /> 单选二
                 </p>
               </div>
-            </section>
-          </article>
-        </div>
-      </div>
 
-      <!-- Tab 2: Markdown 编辑器 -->
-      <div class="tab-panel" id="panel-markdown">
-        <div class="md-layout">
-          <!-- Editor -->
-          <section class="md-editor-panel">
-            <div class="md-panel-header">
-              <div class="md-panel-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-                <span>Markdown 输入区</span>
+              <div style="width: 760px">
+                <h2 id="sec-10-hyperlink-title">Hyperlink 测试</h2>
+                <p id="sec-10-hyperlink-p1">
+                  普通文本，中间带
+                  <a href="https://example.com">可点击链接</a> 的内联内容。
+                </p>
+                <p id="sec-10-hyperlink-p2">
+                  <a href="https://developer.mozilla.org">外部文档链接</a>
+                  之后继续文本。
+                </p>
               </div>
-              <div class="md-panel-stats">
-                <span class="md-stat-badge" id="md-line-count">0 行</span>
-                <span class="md-stat-badge" id="md-word-count">0 词</span>
-                <span class="md-stat-badge" id="md-char-count">0 字符</span>
+              <div
+                style="
+                  width: 760px;
+                  font-family: &quot;Source Han Sans SC&quot;;
+                "
+              >
+                <p id="sec-10-compound-1">复合字形测试：á é ï ñ ü ä ö 混合在中文段落里</p>
+                <p id="sec-10-compound-2">
+                  前置复合字形后的中文验证：中华人民共和国，abcdefghijklmnopqrstuvwxyz
+                </p>
               </div>
-            </div>
-            <div class="md-editor-body">
-              <div id="vditor-container" style="flex: 1; height: 100%; border: none;"></div>
-            </div>
-          </section>
-          <!-- Preview -->
-          <section class="md-preview-panel">
-            <div class="md-panel-header">
-              <div class="md-panel-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                <span>排版预览 (A4)</span>
-              </div>
-              <div class="md-panel-stats">
-                <span class="md-stat-badge" id="md-theme-indicator">Paper Light</span>
-                <span class="md-stat-badge" id="md-page-count">约 1.0 页</span>
-                <select id="md-theme-select"
-                  style="height: 24px; font-size: 11px; border-radius: 4px; border: 1px solid var(--border-color); padding: 0 4px; background: #fff;">
-                  <option value="paper">Paper Light</option>
-                  <option value="midnight">Midnight Blue</option>
-                  <option value="slate">Slate Editorial</option>
-                  <option value="sepia">Sepia Notebook</option>
-                </select>
-              </div>
-            </div>
-            <div class="md-preview-stage">
-              <div style="width: 100%; max-width: 100%; display: flex; justify-content: center;">
-                <div id="preview-sheet" class="preview-sheet" data-theme="paper">
-                  <div id="watermark-under-layer" class="watermark-layer" data-layer="under"></div>
-                  <div class="md-empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round"
-                      stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 14px;">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="9" y1="15" x2="15" y2="15" />
-                      <line x1="12" y1="12" x2="12" y2="18" />
-                    </svg>
-                    <p style="font-size: 14px; color: var(--text-muted);">在左侧输入 Markdown，右侧将自动渲染为 A4 排版</p>
-                  </div>
-                  <article id="markdown-preview" class="markdown-body"></article>
-                  <div id="watermark-over-layer" class="watermark-layer" data-layer="over"></div>
+              </section>
+            </article>
+          </div>
+        </div>
+
+        <!-- Tab 2: Markdown 编辑器 -->
+        <div class="tab-panel" id="panel-markdown">
+          <div class="md-layout">
+            <!-- Editor -->
+            <section class="md-editor-panel">
+              <div class="md-panel-header">
+                <div class="md-panel-title">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 20h9" />
+                    <path
+                      d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                    />
+                  </svg>
+                  <span>Markdown 输入区</span>
+                </div>
+                <div class="md-panel-stats">
+                  <span class="md-stat-badge" id="md-line-count">0 行</span>
+                  <span class="md-stat-badge" id="md-word-count">0 词</span>
+                  <span class="md-stat-badge" id="md-char-count">0 字符</span>
                 </div>
               </div>
-            </div>
-          </section>
+              <div class="md-editor-body">
+                <div
+                  id="vditor-container"
+                  style="flex: 1; height: 100%; border: none"
+                ></div>
+              </div>
+            </section>
+            <!-- Preview -->
+            <section class="md-preview-panel">
+              <div class="md-panel-header">
+                <div class="md-panel-title">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <span>排版预览 (A4)</span>
+                </div>
+                <div class="md-panel-stats">
+                  <span class="md-stat-badge" id="md-theme-indicator"
+                    >Paper Light</span
+                  >
+                  <span class="md-stat-badge" id="md-page-count"
+                    >约 1.0 页</span
+                  >
+                  <select
+                    id="md-theme-select"
+                    style="
+                      height: 24px;
+                      font-size: 11px;
+                      border-radius: 4px;
+                      border: 1px solid var(--border-color);
+                      padding: 0 4px;
+                      background: #fff;
+                    "
+                  >
+                    <option value="paper">Paper Light</option>
+                    <option value="midnight">Midnight Blue</option>
+                    <option value="slate">Slate Editorial</option>
+                    <option value="sepia">Sepia Notebook</option>
+                  </select>
+                </div>
+              </div>
+              <div class="md-preview-stage">
+                <div
+                  style="
+                    width: 100%;
+                    max-width: 100%;
+                    display: flex;
+                    justify-content: center;
+                  "
+                >
+                  <div
+                    id="preview-sheet"
+                    class="preview-sheet"
+                    data-theme="paper"
+                  >
+                    <div
+                      id="watermark-under-layer"
+                      class="watermark-layer"
+                      data-layer="under"
+                    ></div>
+                    <div class="md-empty-state">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#cbd5e1"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style="width: 48px; height: 48px; margin-bottom: 14px"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="9" y1="15" x2="15" y2="15" />
+                        <line x1="12" y1="12" x2="12" y2="18" />
+                      </svg>
+                      <p style="font-size: 14px; color: var(--text-muted)">
+                        在左侧输入 Markdown，右侧将自动渲染为 A4 排版
+                      </p>
+                    </div>
+                    <article
+                      id="markdown-preview"
+                      class="markdown-body"
+                    ></article>
+                    <div
+                      id="watermark-over-layer"
+                      class="watermark-layer"
+                      data-layer="over"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
-      </div>
-    </main>
-  </div>
-  <script src="./index.js"></script>
-</body>
-
+      </main>
+    </div>
+    <script src="./index.js"></script>
+  </body>
 </html>
