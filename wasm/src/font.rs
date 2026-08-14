@@ -337,14 +337,15 @@ impl FontCtx {
             let mut used: Vec<u16> = cf.used_gids.borrow().iter().copied().collect();
             used.sort_unstable();
             used.dedup();
+            // Ensure .notdef (gid 0) is always present before subsetting.
+            if !used.contains(&0) {
+                used.insert(0, 0);
+            }
             // Keep this list identical to the final subset font's glyph order.
             // Composite outlines can pull in component glyphs that were not
             // shaped directly; omitting them shifts every following Identity GID.
             if let Ok(subset_glyphs) = cf.ttf.subset_glyphs(&used) {
                 used = subset_glyphs;
-            }
-            if !used.contains(&0) {
-                used.insert(0, 0);
             }
             let map: HashMap<u16, u16> = used
                 .iter()
