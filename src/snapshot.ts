@@ -905,6 +905,13 @@ function analyzeFormControl(
   cs: CSSStyleDeclaration,
   form: NormalizedFormOptions,
 ): FormControlAnalysis | null {
+  // Type gate first: callers invoke this on every full-raster element (SVG,
+  // canvas, ...), so non-control elements must bail before any style parsing.
+  if (!(el instanceof HTMLInputElement) && !(el instanceof HTMLTextAreaElement)
+    && !(el instanceof HTMLSelectElement) && !(el instanceof HTMLProgressElement)
+    && !(el instanceof HTMLMeterElement)) {
+    return null;
+  }
   const textAlign = alignNum(cs.textAlign);
   const padding: [number, number, number, number] = [
     parseFloat(cs.paddingTop) || 0,
@@ -3569,6 +3576,29 @@ function buildInlineRunsWithLangFont(
     });
   }
 
+  function pushFormFieldEntry(nodeId: number, formControl: FormControlAnalysis): void {
+    formFields.push({
+      id: formFields.length + 1,
+      nodeId,
+      kind: formControl.kind,
+      interactiveKind: formControl.interactiveKind,
+      name: formControl.name,
+      value: formControl.value,
+      defaultValue: formControl.defaultValue,
+      placeholder: formControl.placeholder,
+      checked: formControl.checked,
+      disabled: formControl.disabled,
+      readonly: formControl.readonly,
+      required: formControl.required,
+      multiple: formControl.multiple,
+      placeholderShown: formControl.placeholderShown,
+      password: formControl.password,
+      textAlign: formControl.textAlign,
+      padding: formControl.padding,
+      options: formControl.options,
+    });
+  }
+
   function pushFormHiddenText(
     parentId: number,
     box: NodeRec,
@@ -3651,6 +3681,33 @@ function buildInlineRunsWithLangFont(
     else stats.strategyVector += 1;
 
     if (strategy === 'full-raster' && r.w > 0 && r.h > 0) {
+      // Form controls can legitimately land here: native-appearance checkbox /
+      // radio (isRasterTag) or a custom style whose ::after checkmark forces
+      // foreground raster. The generic form collection below runs AFTER this
+      // early return, so collect the field here or the interactive widget
+      // silently vanishes from the PDF.
+      const frFormControl = analyzeFormControl(el, cs, normalizedOptions.form);
+      const frInteractive = frFormControl !== null
+        && shouldEmitInteractiveFormField(normalizedOptions.form, frFormControl.interactiveKind);
+      if (frFormControl && frInteractive && shouldSuppressBaseNodeForInteractiveField(frFormControl.kind)) {
+        // Interactive checkbox/radio: the PDF widget renders its own appearance
+        // (box + check state), so baking the browser's pixels would only draw a
+        // second, stale-looking control underneath. Push a hidden placeholder
+        // node carrying the input's rect purely for widget placement.
+        nodes.push({
+          id,
+          parent: parentId,
+          kind: 0,
+          x: r.x, y: r.y, w: r.w, h: r.h,
+          flags: F_RENDER_MODE | F_DIVISION_DISABLE,
+          overflowHidden: false,
+          renderMode: 2,
+          divisionDisable: true,
+          pageBreak: false,
+        });
+        pushFormFieldEntry(id, frFormControl);
+        return;
+      }
       const raster = await rasterizeElement(el, rawRect, quality, cs);
       if (raster) {
         const imageId = images.length + 1;
@@ -3718,6 +3775,11 @@ function buildInlineRunsWithLangFont(
               end: utf8End,
             }], undefined, 3);
           }
+        }
+        // Textual controls that reach full-raster (e.g. transformed inputs):
+        // keep the raster visible and place the widget on top of it.
+        if (frFormControl && frInteractive) {
+          pushFormFieldEntry(id, frFormControl);
         }
         return;
       }
@@ -3950,26 +4012,7 @@ function buildInlineRunsWithLangFont(
         );
       }
       if (emitInteractive) {
-        formFields.push({
-          id: formFields.length + 1,
-          nodeId: node.id,
-          kind: formControl.kind,
-          interactiveKind: formControl.interactiveKind,
-          name: formControl.name,
-          value: formControl.value,
-          defaultValue: formControl.defaultValue,
-          placeholder: formControl.placeholder,
-          checked: formControl.checked,
-          disabled: formControl.disabled,
-          readonly: formControl.readonly,
-          required: formControl.required,
-          multiple: formControl.multiple,
-          placeholderShown: formControl.placeholderShown,
-          password: formControl.password,
-          textAlign: formControl.textAlign,
-          padding: formControl.padding,
-          options: formControl.options,
-        });
+        pushFormFieldEntry(node.id, formControl);
       }
       return;
     }
