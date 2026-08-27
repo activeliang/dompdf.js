@@ -667,17 +667,16 @@ fn shift_flow_tail(snap: &mut Snapshot, children: &[Vec<usize>], root: usize, ga
 
 /// Apply pageBreak / divisionDisable by shifting subtrees in document space so
 /// the existing geometric pagination naturally places them correctly.
+///
+/// The directives are processed in document order, one node at a time, with each
+/// move immediately applied to the node and every later node. This keeps a
+/// later pageBreak or divisionDisable calculation working against the already-
+/// shifted positions, avoiding the drift that occurs when pageBreak is resolved
+/// before a preceding divisionDisable has pushed content down.
 fn apply_break_directives(snap: &mut Snapshot, children: &[Vec<usize>], content_h_px: f32) {
     if content_h_px <= 0.0 {
         return;
     }
-    let roots: Vec<usize> = snap
-        .nodes
-        .iter()
-        .enumerate()
-        .filter(|(_, n)| n.parent < 0)
-        .map(|(i, _)| i)
-        .collect();
 
     fn page_break_gap(y: f32, content_h_px: f32) -> f32 {
         if content_h_px <= 0.0 {
@@ -686,8 +685,8 @@ fn apply_break_directives(snap: &mut Snapshot, children: &[Vec<usize>], content_
         let page = (y / content_h_px).floor();
         let boundary = page * content_h_px;
         // Once a pageBreak-marked block has already landed on a boundary,
-        // keep it there; iterative divisionDisable/pageBreak passes must not
-        // keep pushing it one more full page.
+        // keep it there; iterative passes must not keep pushing it one more
+        // full page.
         if (y - boundary).abs() <= 0.5 {
             return 0.0;
         }
@@ -696,60 +695,42 @@ fn apply_break_directives(snap: &mut Snapshot, children: &[Vec<usize>], content_
         if gap > 0.0 { gap } else { 0.0 }
     }
 
-    // pageBreak and divisionDisable influence the same downstream flow. Run
-    // them together until positions stabilize so a later container move cannot
-    // invalidate an earlier pageBreak placement.
-    for _ in 0..8 {
+    for _ in 0..20 {
         let mut moved = false;
-        // Pass 1: pageBreak — preorder so cascading breaks accumulate.
-        fn walk_break(
-            snap: &mut Snapshot,
-            children: &[Vec<usize>],
-            idx: usize,
-            content_h_px: f32,
-            moved: &mut bool,
-        ) {
-            if snap.nodes[idx].page_break {
-                let gap = page_break_gap(snap.nodes[idx].y, content_h_px);
-                if gap > 0.0 {
-                    shift_flow_tail(snap, children, idx, gap);
-                    *moved = true;
+        for i in 0..snap.nodes.len() {
+            let is_division_disable = {
+                let n = &snap.nodes[i];
+                n.division_disable && n.kind == 0
+            };
+
+            if is_division_disable {
+                // Recompute the subtree's current vertical bounds; earlier moves
+                // in this pass may have already shifted it.
+                let mut lo = snap.nodes[i].y;
+                let mut hi = snap.nodes[i].y + snap.nodes[i].h;
+                let mut sub = Vec::new();
+                collect_subtree(snap, children, i, &mut sub);
+                for &s in sub.iter() {
+                    lo = lo.min(snap.nodes[s].y);
+                    hi = hi.max(snap.nodes[s].y + snap.nodes[s].h);
+                }
+                let top_page = (lo / content_h_px).floor();
+                let bot_page = ((hi - 1e-3) / content_h_px).floor();
+                if bot_page > top_page && (hi - lo) < content_h_px {
+                    let target = (top_page + 1.0) * content_h_px;
+                    let gap = target - lo;
+                    if gap > 0.5 {
+                        shift_flow_tail(snap, children, i, gap);
+                        moved = true;
+                    }
                 }
             }
-            let kids: Vec<usize> = children[idx].clone();
-            for c in kids {
-                walk_break(snap, children, c, content_h_px, moved);
-            }
-        }
-        for &r in &roots {
-            walk_break(snap, children, r, content_h_px, &mut moved);
-        }
 
-        // Pass 2: divisionDisable — if a box subtree straddles a page boundary
-        // and fits within one page, move it to the next boundary.
-        let div_nodes: Vec<usize> = snap
-            .nodes
-            .iter()
-            .enumerate()
-            .filter(|(_, n)| n.division_disable && n.kind == 0)
-            .map(|(i, _)| i)
-            .collect();
-        for &i in div_nodes.iter() {
-            // recompute subtree bounds for i
-            let mut lo = snap.nodes[i].y;
-            let mut hi = snap.nodes[i].y + snap.nodes[i].h;
-            let mut sub = Vec::new();
-            collect_subtree(snap, children, i, &mut sub);
-            for &s in sub.iter() {
-                lo = lo.min(snap.nodes[s].y);
-                hi = hi.max(snap.nodes[s].y + snap.nodes[s].h);
-            }
-            let top_page = (lo / content_h_px).floor();
-            let bot_page = ((hi - 1e-3) / content_h_px).floor();
-            if bot_page > top_page && (hi - lo) < content_h_px {
-                let target = (top_page + 1.0) * content_h_px;
-                let gap = target - lo;
-                if gap > 0.0 {
+            let is_page_break = snap.nodes[i].page_break;
+            if is_page_break {
+                let y = snap.nodes[i].y;
+                let gap = page_break_gap(y, content_h_px);
+                if gap > 0.5 {
                     shift_flow_tail(snap, children, i, gap);
                     moved = true;
                 }
