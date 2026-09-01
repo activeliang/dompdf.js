@@ -524,7 +524,8 @@ mod tests {
             .expect("composite glyph retained") as u16;
         assert_eq!(fontctx.cid[0].subset_gid(old_gid), expected_gid);
 
-        let subset_bytes = fontctx.cid[0].ttf.embed_bytes(&subset_glyphs);
+        let subset_glyphs_vec: Vec<u16> = subset_glyphs.into_iter().collect();
+        let subset_bytes = fontctx.cid[0].ttf.embed_bytes(&subset_glyphs_vec);
         let subset = TtfFont::parse(&subset_bytes).expect("parse subset font");
         assert_eq!(subset.gid_for(codepoint as u32), expected_gid);
     }
