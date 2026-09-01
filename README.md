@@ -687,6 +687,7 @@ This architecture avoids drawing the entire document into one Canvas and keeps t
 - [`examples/index.html`](./examples/index.html): comprehensive feature demo
 - [`examples/comparison.html`](./examples/comparison.html): comparison with other frontend PDF approaches
 - [`examples/markdown-editor.html`](./examples/markdown-editor.html): Markdown editing and live export
+- [`userscript/dompdf-page-exporter.user.js`](./userscript/dompdf-page-exporter.user.js): userscript for full-page, single-node, and exclusion-based exports; see [`userscript/README.md`](./userscript/README.md) for installation
 
 Run `npm run serve` from the repository root before opening an example. Do not open examples directly through `file://`, because browser security policies may block modules, fonts, and cross-origin resources.
 

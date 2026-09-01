@@ -687,6 +687,7 @@ await dompdf(element, {
 - [`examples/index.html`](./examples/index.html)：综合功能演示
 - [`examples/comparison.html`](./examples/comparison.html)：与其他前端 PDF 方案对比
 - [`examples/markdown-editor.html`](./examples/markdown-editor.html)：Markdown 编辑和实时导出
+- [`userscript/dompdf-page-exporter.user.js`](./userscript/dompdf-page-exporter.user.js)：支持整页、单节点和排除元素的油猴导出脚本，安装说明见 [`userscript/README.md`](./userscript/README.md)
 
 在仓库根目录运行 `npm run serve` 后访问对应页面。不要直接通过 `file://` 打开示例，否则模块、字体和跨域资源可能受浏览器安全策略限制。
 
