@@ -2381,18 +2381,6 @@ function classifyRenderStrategy(el: HTMLElement, cs: CSSStyleDeclaration): Rende
   if (pseudoHasVisual(afterPseudo) && pseudoNeedsForegroundRaster(afterPseudo)) return 'full-raster';
   const beforeVisual = pseudoHasVisual(getComputedStyle(el, '::before'));
   if (beforeVisual || hasComplexBackground(cs)) return 'background-raster';
-  // ::marker (list-item bullets/numbers) is a browser-generated pseudo-element
-  // not captured by the vector path. Bake it into a raster so it appears.
-  if (cs.display === 'list-item') {
-    const type = (cs.listStyleType || '').trim();
-    if (type && type !== 'none') {
-      // Always use full-raster: the marker clone is placed inside the content
-      // area as inline text. With background-raster the vector text would be
-      // drawn at the same position, overlapping the baked marker. full-raster
-      // bakes marker + text together so positions are self-consistent.
-      return 'full-raster';
-    }
-  }
   return 'vector';
 }
 
@@ -3742,22 +3730,23 @@ function buildInlineRunsWithLangFont(
           objectFit: 0,
         });
 
-        if (el.tagName === 'CODE') {
-          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-          let textNode = walker.nextNode() as Text | null;
-          while (textNode) {
-            const text = textNode.data;
-            if (text && text.trim().length > 0) {
-              const owner = (textNode.parentElement || el) as HTMLElement;
-              const lines = collectTextLines(textNode);
-              if (lines.length > 0) {
-                const font = makeFont(getComputedStyle(owner)) as NonNullable<NodeRec['font']>;
-                pushTextNode(parentId, font, text, lines, undefined, 3);
-              }
+        let extractedAnyText = false;
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        let textNode = walker.nextNode() as Text | null;
+        while (textNode) {
+          const text = textNode.data;
+          if (text && text.trim().length > 0) {
+            const owner = (textNode.parentElement || el) as HTMLElement;
+            const lines = collectTextLines(textNode);
+            if (lines.length > 0) {
+              const font = makeFont(getComputedStyle(owner)) as NonNullable<NodeRec['font']>;
+              pushTextNode(parentId, font, text, lines, undefined, 3);
+              extractedAnyText = true;
             }
-            textNode = walker.nextNode() as Text | null;
           }
-        } else {
+          textNode = walker.nextNode() as Text | null;
+        }
+        if (!extractedAnyText) {
           const hiddenText = collectFullRasterExtractableText(el);
           if (hiddenText) {
             const font = makeFont(cs) as NonNullable<NodeRec['font']>;
