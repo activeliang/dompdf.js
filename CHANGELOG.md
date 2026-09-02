@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/lmn1919/dompdf.js/compare/v2.0.1...v2.0.2) (2026-09-02)
+
+
+### Bug Fixes
+
+* list-item 走 vector 路径并通用化 CODE 文本提取 ([a53a245](https://github.com/lmn1919/dompdf.js/commit/a53a245ddba91593920f934e7e723f27bc4e453a))
+
 ### [2.0.1](https://github.com/lmn1919/dompdf.js/compare/v2.0.0...v2.0.1) (2026-08-27)
 
 
