@@ -80,6 +80,17 @@ impl PdfWriter {
         self.end_obj();
     }
 
+    /// Encode a PDF string as hex, applying object-level encryption when enabled.
+    pub fn hex_string(&self, object_id: u32, value: &[u8]) -> String {
+        let bytes = if let Some(security) = &self.security {
+            security.encrypt_bytes(object_id, 0, value)
+        } else {
+            value.to_vec()
+        };
+        let hex = bytes.iter().map(|byte| format!("{:02X}", byte)).collect::<String>();
+        format!("<{}>", hex)
+    }
+
     pub fn write_encrypt_obj(&mut self) {
         if let (Some(security), Some(id)) = (self.security.as_ref(), self.encrypt_id) {
             let body = security.encrypt_dict();
@@ -91,21 +102,23 @@ impl PdfWriter {
     /// (e.g. `/Width 800`). /Length is added automatically.
     pub fn stream(&mut self, id: u32, dict_extra: &str, data: &[u8]) {
         self.begin_obj(id);
-        let payload = if let Some(security) = &self.security {
+        let payload: Vec<u8>;
+        let bytes: &[u8] = if let Some(security) = &self.security {
             if Some(id) == self.encrypt_id {
-                data.to_vec()
+                data
             } else {
-                security.encrypt_bytes(id, 0, data)
+                payload = security.encrypt_bytes(id, 0, data);
+                &payload
             }
         } else {
-            data.to_vec()
+            data
         };
         self.put(&format!(
             "<< /Length {}{} >>\nstream\n",
-            payload.len(),
+            bytes.len(),
             dict_extra
         ));
-        self.put_bytes(&payload);
+        self.put_bytes(bytes);
         self.put("\nendstream");
         self.end_obj();
     }
@@ -115,21 +128,23 @@ impl PdfWriter {
     /// /Filter or /Length (this method adds /Filter /FlateDecode and /Length).
     pub fn stream_compressed(&mut self, id: u32, dict_extra: &str, compressed: &[u8]) {
         self.begin_obj(id);
-        let payload = if let Some(security) = &self.security {
+        let payload: Vec<u8>;
+        let bytes: &[u8] = if let Some(security) = &self.security {
             if Some(id) == self.encrypt_id {
-                compressed.to_vec()
+                compressed
             } else {
-                security.encrypt_bytes(id, 0, compressed)
+                payload = security.encrypt_bytes(id, 0, compressed);
+                &payload
             }
         } else {
-            compressed.to_vec()
+            compressed
         };
         self.put(&format!(
             "<< /Length {} /Filter /FlateDecode{} >>\nstream\n",
-            payload.len(),
+            bytes.len(),
             dict_extra
         ));
-        self.put_bytes(&payload);
+        self.put_bytes(bytes);
         self.put("\nendstream");
         self.end_obj();
     }

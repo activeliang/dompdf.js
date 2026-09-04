@@ -277,6 +277,22 @@ export async function collectOracle({
       const hasBgImg = hasImageLikeBackground(ps.backgroundImage);
       return Boolean(hasContent || hasBgImg);
     };
+    const pseudoHasVisual = (el, which) => {
+      const ps = getComputedStyle(el, which);
+      if (!ps) return false;
+      const content = ps.content;
+      const hasContent = content && !['none', 'normal', '""', "''"].includes(content);
+      const bgAlpha = colorAlpha(ps.backgroundColor);
+      const hasBgImg = ps.backgroundImage && ps.backgroundImage !== 'none';
+      const sides = ['Top', 'Right', 'Bottom', 'Left'];
+      const hasBorder = sides.some((s) => {
+        const width = parseFloat(ps[`border${s}Width`]) || 0;
+        const bStyle = ps[`border${s}Style`];
+        const bColor = ps[`border${s}Color`];
+        return width > 0 && bStyle !== 'none' && colorAlpha(bColor) > 0.01;
+      });
+      return Boolean(hasContent || bgAlpha > 0.01 || hasBgImg || hasBorder);
+    };
 
     const elements = [];
     const ELEMENT_CAP = 800;
@@ -322,7 +338,14 @@ export async function collectOracle({
       const hasBorderRadius = borderRadius.some((v) => v > 0.01);
 
       const tag = el.tagName.toUpperCase();
-      const isIcon = tag === 'IMG' || tag === 'SVG'
+      const inputType = tag === 'INPUT' ? (el.getAttribute('type') || 'text').toLowerCase() : '';
+      const isNativeControl = tag === 'INPUT'
+        && (inputType === 'checkbox' || inputType === 'radio')
+        && (style.appearance || style.webkitAppearance || '') !== 'none';
+      const hasMarker = style.display === 'list-item'
+        && (style.listStyleType || '').trim() !== 'none'
+        && (style.listStyleType || '').trim() !== '';
+      const isIcon = isNativeControl || hasMarker || tag === 'IMG' || tag === 'SVG'
         || hasImageLikeBackground(style.backgroundImage)
         || pseudoIsIcon(el, '::before') || pseudoIsIcon(el, '::after');
 
@@ -336,9 +359,12 @@ export async function collectOracle({
         w: rect.width,
         h: rect.height,
         backgroundColor: hasBg ? bg : null,
+        backgroundImage: style.backgroundImage && style.backgroundImage !== 'none' ? style.backgroundImage : null,
         border: hasBorder ? border : null,
         borderRadius: hasBorderRadius ? borderRadius : null,
         boxShadow: hasShadow ? boxShadow : null,
+        hasPseudoBefore: pseudoHasVisual(el, '::before'),
+        hasPseudoAfter: pseudoHasVisual(el, '::after'),
         isIcon: Boolean(isIcon),
       });
     }
